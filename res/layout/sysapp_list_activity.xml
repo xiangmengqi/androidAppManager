@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ExpandableListView
+        android:id="@+id/expendList1"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:cacheColorHint="#00000000"
+        android:fadeScrollbars="true"
+        android:scrollbarAlwaysDrawHorizontalTrack="true" >
+    </ExpandableListView>
+
+    <Button 
+        android:id="@+id/btnConfirm"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="卸载选中应用"/>
+    <Button 
+        android:id="@+id/btnRestore"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="恢复选中应用"/>
+    
+</LinearLayout>
