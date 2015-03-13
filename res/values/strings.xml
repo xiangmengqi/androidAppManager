@@ -1,8 +1,242 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Root精灵</string>
+    
+    <!-- Aboug Dialog -->
+    <string name="about_dialog_text_2">©2011&#8211;2014</string>
+    <string name="about_dialog_text_3">深圳瓶子科技有限公司  版权所有</string>
+    <string name="about_dialog_text_4">http://www.sjroot.com</string>
+    
+    <!-- Use Dialog -->
+    <string name="use_dialog_text_4">使用Root精灵，即表示您已同意</string>
+    <string name="wait_rooting">Root过程将花费数分钟，请稍候&#8230;</string>
+    <string name="installing_su_suit">正在安装授权管理组件&#8230;</string>
+    <string name="check_update">正在检查更新&#8230;</string>
+    <string name="uptodate">已是最新版本</string>
+    <string name="check_failed">检查更新失败</string>
+    <string name="downloading_fail_no_storage">手机空间不足，下载更新失败，请清理后重试。</string>
+    <string name="downloading_fail_io">文件数据读写错误，请重试。</string>
+    <string name="notify_root_fail">获取Root权限失败，点击查看解决方法</string>
+    <string name="notify_root_succ">恭喜您已成功获取Root权限，点击查看</string>
+    <string name="notify_root_rm_fail">移除Root权限失败</string>
+    <string name="notify_root_rm_succ">移除Root权限成功</string>
+    <string name="notify_download_finish">版本更新已下载完成，点击安装</string>
+    <string name="notify_download_fail">下载更新时出现问题，点击查看</string>
+    <string name="notify_download_wifigone">下载已暂停，点击查看</string>
+    
+    <!-- Treasure box -->
+    <string name="treasure_box_title">Root必备</string>
+    <string name="treasure_box_item_ziti">换个字体</string>
+    <string name="treasure_box_item_shuaji">一键刷ROM</string>
+    <string name="treasure_box_continue_shuaji_remind">您可以继续刷ROM了！</string>
+    <string name="treasure_box_continue_replace_font_remind">您可以继续换字体了！</string>
+    <string name="treasure_box_open">点击展开</string>
+    <string name="treasure_box_close">点击关闭</string>
+    <string name="treasure_box_remind_update_msg">您的版本过旧，必须升级后才能使用该功能</string>
+    <string name="treasure_box_remind_update_btn">好的</string>
+    
+    <!-- homepage -->
+    <string name="homepage_title">Root精灵</string>
+    <string name="homepage_login_agree">已同意</string>
+    <string name="homepage_login_treaty"><u>《软件许可及服务协议》</u></string>
+    <string name="homepage_login_text">立即进入</string>
+    <string name="homepage_prepare_root_btn_text">一键安全Root</string>
+    <string name="homepage_update_root_component_btn_text">升级Root组件</string>
+    <string name="homepage_rooted_remind_text">您的手机已获取Root权限</string>
+    <string name="homepage_updating_root_component_wait_text">正在升级Root组件&#8230;</string>
+    <string name="homepage_not_root_text">未获取Root权限</string>
+    <string name="homepage_rooted_reboot_remind_text">请重启手机以激活权限</string>
+    <string name="homepage_not_update_su_text">需要升级Root组件，以提高安全和兼容性</string>
+    <string name="homepage_check_root_btn_text">正在检查Root权限&#8230;</string>
+    
+	<!-- root done -->
+    <string name="root_done_success_remind_text">恭喜，成功获取Root权限</string>
+    <string name="root_done_fail_join_pc_button_text">连接电脑强力Root</string>
+    <string name="root_done_fail_continue_button_text">重试</string>
+    <string name="root_done_fail_remind_text_1">手机版挑战失败，</string>
+    <string name="root_done_fail_remind_text_2">电脑版中该机型成功率高达</string>
+    <string name="joint_pc_root_step_text_1">在电脑浏览器中搜索Root精灵，或输入www.sjroot.com</string>
+    <string name="joint_pc_root_step_text_2">下载Root精灵PC版</string>
+    <string name="joint_pc_root_step_text_3">通过USB数据线连接您的手机，点击"一键Root"</string>
+    
+	<!-- root remove -->
+    <string name="root_remove_remid_msg">移除Root权限后您将失去使用卸载顽固应用、找回锁屏密码等功能的特权</string>
+    <string name="root_remove_remid_btn_text_1">坚持移除</string>
+    <string name="root_remove_remid_btn_text_2">保留特权</string>
+    <string name="root_remove_ing_remid_text">正在移除Root,请稍候…</string>
+    <string name="root_remove_succ_remid_text_1">成功移除Root权限</string>
+    <string name="root_remove_succ_remid_text_2">可以随时重新Root体验更多功能</string>
+    <string name="root_remove_fail_remid_text_1">未能移除Root权限</string>
+    <string name="root_remove_fail_remid_text_2">若系统自带Root权限是无法移除</string>
+    
+	<!-- update app -->
+    <string name="update_remind_title">新版本</string>
+    <string name="update_remind_msg">发现新的版本，是否立即更新？</string>
+    <string name="update_remind_btn_update_now">立即更新</string>
+    <string name="update_download_ing_msg">正在下载最新版本</string>
+    <string name="update_download_done_msg">最新版本已下载完成，即将开始更新</string>
+    <string name="update_retry_msg">网络不给力，下载更新失败，是否重试？</string>
+    <string name="update_retry_btn">重试</string>
+    <string name="update_wifi_changed_msg">您的WIFI网络已断开，是否使用手机流量继续下载？</string>
+    
+	<!-- update root component -->
+    <string name="update_component_fail_remid_text">Root组件升级失败，请重试</string>
+    <string name="update_component_succ_remid_text">恭喜，Root组件升级成功</string>
+    <string name="update_component_succ_reboot_remid_text">请重启手机激活新的组件</string>
+    <string name="update_component_flow_remind_text">升级过程将使用约&#160;%s&#160;移动网络流量，是否继续？(土豪请无视)</string>
+    <string name="notify_component_download_wifigone">Root组件升级已暂停，点击查看</string>
+    <string name="notify_component_update_fail">Root组件升级失败</string>
+    <string name="notify_component_update_succ">Root组件升级成功</string>
+    <string name="notify_component_update_title">升级Root组件</string>
+    <string name="notify_component_update_msg">需要升级Root组件，以提高安全和兼容性</string>
+    
+	<!-- treaty -->
+    <string name="treaty_title">服务协议</string>
+    <string name="treaty_descr_title_0">重要须知</string>
+    <string name="treaty_descr_detail_0">在此特别提醒用户认真阅读、充分理解本《软件许可及服务协议》（下称《协议》）--- 用户应认真阅读、充分理解本《协议》中各条款，包括免除或者限制深圳瓶子科技有限公司（下称“瓶子科技”）责任的免责条款及对用户的权利限制条款。请您审慎阅读并选择接受或不接受本《协议》（未成年人应在法定监护人陪同下阅读）。除非您接受本《协议》所有条款，否则您无权下载、安装或使用本软件及其相关服务。您的下载、安装、使用、帐号获取和登录等行为将视为对本《协议》的接受，并同意接受本《协议》各项条款的约束。\n本《协议》是用户与瓶子科技及其运营合作单位（下称“合作单位”）之间关于用户下载、安装、使用、复制“Root精灵”；以及使用瓶子科技相关服务所订立的协议。本《协议》描述瓶子科技与用户之间关于“软件”许可使用及服务相关方面的权利义务。“用户”是指通过瓶子科技提供的获取软件授权和帐号注册的途径获得软件产品及号码授权许可以及使用瓶子科技相关服务的个人或组织。\n本《协议》可由瓶子科技随时更新，更新后的协议条款一旦公布即代替原来的协议条款，恕不再另行通知。用户可重新下载安装本软件或网站查阅最新版协议条款。在瓶子科技修改《协议》条款后，如果用户不接受修改后的条款，请立即停止使用瓶子科技提供的软件和服务，用户继续使用瓶子科技提供的软件和服务将被视为已接受了修改后的协议。</string>
+    <string name="treaty_descr_title_1">一、总则</string>
+    <string name="treaty_descr_detail_1">1．瓶子科技Root精灵及服务（以下简称本软件及服务）是瓶子科技提供的安装在包括但不限于电脑及移动电话、PAD等各种无线手持终端上的具有资源下载、管理、同步及通讯录、短信管理、同步等功能的软件及服务。\n2．Root精灵软件及服务的所有权和运营权，以及业务规则及活动的解释权均归瓶子科技所有。\n3．若有违反本条款之规定，瓶子科技有权不经通知终止相关服务。</string>
+    <string name="treaty_descr_title_2">二、知识产权声明</string>
+    <string name="treaty_descr_detail_2">1．“Root精灵”的一切版权、商标权、专利权、商业秘密等知识产权，以及与“软件”相关的所有信息内容，包括但不限于：文字表述及其组合、图标、图饰、图表、色彩、界面设计、版面框架、有关数据、印刷材料、或电子文档等均受中华人民共和国著作权法、商标法、专利法、反不正当竞争法和相应的国际条约以及其他知识产权法律法规的保护，除涉及第三方授权的软件或技术外，瓶子科技享有上述知识产权。\n2．未经瓶子科技书面同意，用户不得为任何营利性或非营利性的目的自行实施、利用、转让或许可任何三方实施、利用、转让上述知识产权，瓶子科技保留追究上述未经许可行为的权利。\n3．未经瓶子科技书面同意，用户不得对Root精灵进行反向工程（reverse engineer）、反向编译（decompile）或反汇编（disassemble），瓶子科技保留追究上述未经许可行为的权利。</string>
+    <string name="treaty_descr_title_3">三、“Root精灵”授权范围</string>
+    <string name="treaty_descr_detail_3">1．用户可以为非商业目的在电脑设备、手机或其他无线手持终端上安装、使用、显示、运行本“软件”。用户不得为商业运营目的安装、使用、运行本“软件”，不可以对该软件或者该软件运行过程中释放到任何电脑设备、无线手持终端内存中的数据及该软件运行过程中客户端与服务器端的交互数据进行复制、更改、修改、挂接运行或创作任何衍生作品，形式包括但不限于使用插件、外挂或非经授权的第三方工具/服务接入本“软件”和相关系统。\n2．用户不得未经瓶子科技许可，将本“软件”安装在未经瓶子科技明示许可的其他终端设备上。包括但不限于机顶盒、游戏机、电视机、DVD机等。\n3．保留权利：未明示授权的其他一切权利仍归瓶子科技所有，用户使用其他权利时须另外取得瓶子科技的书面同意。</string>
+    <string name="treaty_descr_title_4">四、使用须知</string>
+    <string name="treaty_descr_detail_4">1. 用户必须自行配备电脑设备及手机等无线手持终端上网和使用电信增值业务所需的设备，自行负担电脑设备及个人手机等无线手持终端上网或第三方（包括但不限于电信或移动通信提供商）收取的通讯费、信息费等有关费用。如涉及电信增值服务的，我们建议您与您的电信增值服务提供商确认相关的费用问题。\n2. 您可使用本软件及服务发表您的观点看法、资料等，您必须保证，您享有您所上传内容的合法权利或已获得合法授权，您使用本软件及服务的任何行为未侵犯任何第三方之合法权益，由此所产生的任何可能侵害他人权益的行为，瓶子科技网站的所有者均不对任何人承担任何责任。\n3. 您同意将您上传之内容授予瓶子科技全球性、免许可费、非独家、可完全转授权、及永久有效的使用权利，瓶子科技可以为了展示、散布及推广张贴前述内容之特定目的，将前述内容复制、修改、改写、改编后用于互联网增值业务或电信增值业务。\n4. 您了解并且同意只要您使用本软件及服务，您将遵守本条款中的权利义务。您对所有在您的注册名下发生的一切行为负责。\n5. 尊重及保护用户信息的合法权益是瓶子科技一贯的制度。用户同意瓶子科技采取以下方式处理用户信息：\n5.1根据产品功能特点，经过用户许可，瓶子科技可能收集以下数据：\n5.1.1为了给用户提供软件升级提示服务，会上报用户手机安装软件的相关信息。\n5.1.2为了给用户提供智能推荐等功能服务，会上报用户手机安装、启动、卸载软件的信息。\n5.2用户对本软件的操作状态和使用行为信息等一些明确且客观反映在瓶子科技服务器端的基本记录信息和其相关信息，例如：软件使用情况，软件升级请求信息等。\n5.3用户同意瓶子科技基于下列原因需要使用用户的信息资源：\n5.3.1执行软件验证服务；\n5.3.2执行软件升级服务；\n5.3.3提高用户的使用安全性并提供客户支持；\n5.3.4改善或提高软件的技术和服务，例如，帮助我们了解用户使用软件和服务时遇到的问题，帮助我们改善我们软件和服务的质量、性能和安全性；\n5.3.5在用户同意的情况下，将根据用户信息所作出的统计数据、行为分析等非关联用户身份识别的信息提供给合作单位，用于呈现合作效果；\n5.3.6为用户发送通知及瓶子科技提供的服务信息；\n5.4瓶子科技将会采取合理的措施保护用户信息，不向第三方公开、透露用户信息，除以下情形之外：\n5.4.1基于法律或法律赋予权限的政府部门要求；\n5.4.2用户同意瓶子科技公开、透露用户信息的；\n5.4.3用户与瓶子科技及第三方合作单位之间就用户信息公开或使用另有约定的；\n5.5 因用户使用第三方服务或者设备，可能导致用户信息通过其他方式透露给第三方，用户需自行了解第三方对用户信息保护的相关条款，瓶子科技不承担由此产生的风险。上述情形包括但不限于：\n5.5.1 由于本软件需通过移动运营商提供的网络向用户提供服务，运营商可能获取用户的部分信息。用户可查阅移动运营商的用户信息保护策略了解运营商处理用户信息的详情；\n5.5.2用户在移动设备上使用第三方应用程序。因第三方应用程序收集的用户信息可能发送至第三方进行处理。\n5.6 本软件的某些功能可能会让第三方知晓用户的信息。用户了解此本部分的信息公开和透露可能会给用户带来潜在风险，用户自行承担由此造成的风险，瓶子科技不为此承担责任。\n5.7用户可以选择不向瓶子科技提供用户信息，或者根据产品设置取消瓶子科技收集某些信息。因用户未向瓶子科技提供信息导致相关服务功能无法实现，瓶子科技不为此承担责任。\n6. 本软件中可能存在网友提供之内容，您了解并且同意瓶子科技不能为用户行为负责。使用本软件及服务产生的所有风险由您个人承担，瓶子科技不对本软件及服务的适用性、合法性、安全性、无毒性做任何形式的保证。如果您发现本软件及服务中存在任何违法违规行为，有义务及时向瓶子科技举报。\n7. 用户不得利用本软件及服务进行故意制作、传播计算机病毒等破坏性程序，不得针对本服务、与本软件及服务连接的服务器或网络制造干扰、混乱，或违反连接本软件及服务的网络的任何要求、程序、政策或规则，否则瓶子科技将保留追究其法律责任的权利并有权将其提交给相关部门处理。\n8. 用户不得利用本软件及服务传播、复制、发送、上传和发布任何妨碍社会治安或非法、虚假、骚扰性、侮辱性、恐吓性、伤害性、破坏性、挑衅性、淫秽色情性等内容的信息。\n9. 用户依本协议条款所取得的服务权利不可转让。\n10. 如用户违反国家法律法规或本协议条款，本公司和合作公司将有权停止向用户提供服务而不需承担任何责任。如导致瓶子科技或其合作公司遭受任何损害或遭受任何来自第三方的纠纷、诉讼、索赔要求等，用户须向本公司或合作公司赔偿相应的损失，用户并需对其违反服务条款所产生的一切后果负全部法律责任。瓶子科技有权认定和删除用户所发表的任何不符合国家法律、法规和政策、本服务条款的任何文章、资料、图片、图表等内容，且不需要对用户另行通知。\n11. 瓶子科技保留在任何时候因为任何原因拒绝向任何人提供服务的权利。\n12. 用户须遵守包括但不限于以下严禁事宜：\n12.1 利用本软件及服务传播反对宪法所确定的基本原则的内容；\n12.2 利用本软件及服务传播危害国家安全，泄露国家秘密，颠覆国家政权，破坏国家统一的内容；\n12.3 利用本软件及服务传播损害国家荣誉和利益的内容；\n12.4 利用本软件及服务传播煽动民族仇恨、民族歧视，破坏民族团结的内容；\n12.5 利用本软件及服务传播破坏国家宗教政策，宣扬邪教和封建迷信的内容；\n12.6 利用本软件及服务散布谣言，扰乱社会秩序，破坏社会稳定的内容；\n12.7 利用本软件及服务散布淫秽、色情、赌博、暴力、凶杀、恐怖或者教唆犯罪的内容；\n12.8 利用本软件及服务传播侮辱或者诽谤他人，侵害他人合法权益的内容；\n12.9 利用本软件及服务传播含有法律、行政法规禁止的其他内容；\n12.10 利用本软件及服务上传任何病毒，木马，或者蠕虫等危害网络健康的内容；\n12.11 制作、发布、传播用于窃取用户专属信息、财产、保密信息的软件；\n12.12 在未经瓶子科技书面明确授权前提下，出售、出租、出借、散布、转移或转授权软件和服务或相关的链接或从使用软件和服务或软件和服务的条款中获利，无论以上使用是否为直接经济或金钱收益；\n12.13 其他以任何不合法的方式、为任何不合法的目的、或以任何与本协议不一致的方式使用本软件和和瓶子科技提供的其他服务；\n13. 如因用户不遵守本条上述任意一款或者几款的规定，瓶子科技有权在不事先通知用户的情况下将相应的内容删除或采取终止、完全或部分中止、限制用户帐号的使用功能或停止用户使用本软件或服务，由此而造成的任何用户损失，由用户自行承担；如造成瓶子科技损失的，瓶子科技有权要求用户给予相应的赔偿，包括但不限于瓶子科技因此被国家机关予以行政处罚，或者被第三方通过诉讼或其他的方式索赔，赔偿范围包括但不限于罚款、赔偿金以及瓶子科技支付的相应的诉讼费、律师费。\n14．如果用户未遵守本《协议》的任何一项条款，瓶子科技有权立即终止本《协议》，并保留通过法律途径追究责任的权利。\n15．本软件为免费软件。用户可以非商业性地下载、安装、复制和散发本软件产品。如果需要进行商业性的销售、复制和散发，例如软件预装和捆绑，必须获得瓶子科技的书面授权和许可。\n16．本软件为免费软件，使用本软件由用户承担风险，用户应具备本软件产品运行所需的条件，用户必须保证有权使用其运行所需操作系统。在适用法律允许的最大范围内，瓶子科技在任何情况下不就用户因使用或不能使用本软件产品所发生的特殊的、意外的、直接的或间接的侵权或遭致损失承担赔偿责任。即使已事先被告知该损害发生的可能性。</string>
+    <string name="treaty_descr_title_5">五、服务风险及免责声明</string>
+    <string name="treaty_descr_detail_5">1. 本软件及服务仅依其当前所呈现的状况提供，本软件及服务涉及到互联网及移动通讯等服务，可能会受到各个环节不稳定因素的影响。因此软件及服务存在因上述不可抗力、计算机病毒或黑客攻击、系统不稳定、用户所在位置、用户关机、GSM等移动网络、互联网络、通信线路原因等造成的服务中断或不能满足用户要求的风险。使用本软件及服务的用户须承担以上风险，瓶子科技对服务的及时性、安全性、准确性不作担保。\n2. 如本公司的系统发生故障而影响到本服务的正常运行，本公司承诺在最短时间内与相关单位配合，及时处理进行修复。但用户因此而产生的经济损失，本公司和合作公司不承担责任。此外，瓶子科技保留不经事先通知为维修保养、升级或其他目的暂停本服务任何部分的权利。\n3. 用户在使用本软件及服务时，须自行承担如下包括但不限于来自瓶子科技不可掌控的风险内容：
+3.1 由于无线网络信号不稳定、无线网络带宽小等原因，所引起的页面打开速度慢、软件下载速度慢等风险。\n3.2 用户必须选择与所安装电脑操作系统及手机操作系统相匹配的Root精灵版本，否则，由于软件与终端设备不相匹配所导致的任何软件问题、终端问题或损害，均由用户自行承担。\n3.3 用户终端隐私信息在使用本软件及服务时可能产生的信息安全风险。\n3.4 鉴于用户计算机、移动设备软件与硬件环境的差异性和复杂性，本产品提供的各项功能与服务并不能保证在任何情况下都能正常执行或达到用户所期望的结果。对于用户使用本产品产生的一切后果，瓶子科技均不承担任何责任。\n3.5 用户在使用本软件访问第三方网站或第三方软件时遇到内容质量及安全问题等，均由用户自行承担。\n3.6 本软件中可能存在来自第三方的软件或信息内容，该部分内容由内容提供方承担相关全部责任，瓶子科技不保证其安全性、准确性、有效性及其他不确定的风险，由此若引发的任何争议及损害，与瓶子科技无关，瓶子科技不承担任何责任。\n4. 用户须明白，在使用本软件产品存在有来自任何他人的包括威胁性的、诽谤性的、令人反感的或非法的内容或行为或对他人权利的侵犯（包括知识产权）的匿名或冒名的信息的风险，用户须承担以上风险，本公司和合作公司对服务不作任何类型的担保，不论是明确的或隐含的，包括所有有关信息真实性、适商性、适于某一特定用途、所有权和非侵权性的默示担保和条件，对因此导致任何因用户不正当或非法使用服务产生的直接、间接、偶然、特殊及后续的损害，不承担任何责任。\n5．因用户使用本软件或要求瓶子科技提供特定服务时，本软件可能会调用第三方系统或第三方软件内容等支持用户的使用或访问，使用或访问的结果由该第三方提供，瓶子科技不保证通过第三方系统支持实现的结果的安全性、准确性、有效性及其他不确定的风险，由此若引发的任何争议及损害，与瓶子科技无关，瓶子科技不承担任何责任。\n6. 非经瓶子科技或瓶子科技授权开发并正式发布的其它任何由本“软件”衍生的软件均属非法，下载、安装、使用此类软件，将可能导致不可预知的风险，由此产生的一切法律责任与纠纷一概与瓶子科技无关。\n7. 瓶子科技在此特别提醒：\n7.1 使用本“软件”必须遵守国家有关法律和政策等，维护国家利益，保护国家安全，并遵守本《协议》。对于用户违法或违反本《协议》的使用而引起的一切责任，由用户负全部责任，一概与瓶子科技及合作单位无关；导致瓶子科技及合作单位损失的，瓶子科技及合作单位有权要求用户赔偿，并有权保留相关记录。而且，对于用户违法或违反本《协议》以及违反了利用本软件和帐号访问的瓶子科技或合作单位的其他服务规定的相关服务条款，瓶子科技有权视用户的行为性质，在不事先通知用户的情况下，采取包括但不限于中断使用许可、停止提供服务、限制使用、回收用户帐号、法律追究等措施。对利用帐号进行违法活动、骚扰、欺骗其他用户等行为，瓶子科技有权回收其帐号。由此带来的包括并不限于用户通信中断、用户资料、邮件和游戏道具丢失等损失由用户自行承担。\n7.2 非经瓶子科技或瓶子科技授权开发并正式发布的其它任何由本“软件”衍生的软件均属非法，下载、安装、使用此类软件，将可能导致不可预知的风险，由此产生的一切法律责任与纠纷一概与瓶子科技无关。用户不得轻易下载、安装、使用此类软件，否则，瓶子科技有权在不事先通知用户的情况下单方面终止用户帐号的使用资格。</string>
+    <string name="treaty_descr_title_6">六、服务及协议条款的变更</string>
+    <string name="treaty_descr_detail_6">瓶子科技有权在必要时修改本协议条款，协议条款一旦发生变动，将会在相关页面上公布修改后的协议条款。如果不同意所改动的内容，用户应主动取消此项服务。如果用户继续使用服务，则视为接受协议条款的变动。\n瓶子科技和合作公司有权按需要修改或变更所提供的收费服务、收费标准、收费方式、服务费、及服务条款。瓶子科技在提供服务时，可能现在或日后对部分服务的用户开始收取一定的费用如用户拒绝支付该等费用，则不能在收费开始后继续使用相关的服务。瓶子科技和合作公司将尽最大努力通过电邮或其他有效方式通知用户有关的修改或变更。</string>
+    <string name="treaty_descr_title_7">七、争议管辖及适用法律</string>
+    <string name="treaty_descr_detail_7">本协议条款之效力和解释均适用中华人民共和国之法律。如协议条款之任何一部分与中华人民共和国法律相抵触，则该部分条款应按法律规定重新解释，部分条款之无效或重新解释不影响其它条款之法律效力。用户和瓶子科技一致同意凡因本服务所产生的纠纷双方应协商解决，协商不成任何一方可提交瓶子科技所在地深圳市有管辖权的法院诉讼裁决。\n\n瓶子科技版权所有，保留一切解释权利。</string>
+    
+	<!-- more -->
+    <string name="more_title">更多</string>
+    <string name="more_relevance_weibo">关注Root精灵微博</string>
+    <string name="more_relevance_weibo_url">http://weibo.com/RootGenius</string>
+    <string name="more_remove_root">移除Root</string>
+    <string name="more_joint_pc_root">连接电脑强力Root</string>
+    <string name="more_check_update">检查更新</string>
+    <string name="more_about_me">关于我们</string>
+    <string name="more_settings">设置</string>
+    <string name="more_settings_component_upgrade_remind">Root组件升级提醒</string>
+    
+	<!-- shuame guide -->
+    <string name="shuame_guide_dialog_remind_root_msg">您必须获取Root权限后才能使用一键刷ROM功能，是否立即Root？</string>
+    <string name="shuame_guide_dialog_remind_root_btn_cancel">以后再说</string>
+    <string name="shuame_guide_dialog_remind_root_btn_root">立即Root</string>
+    <string name="shuame_guide_title">一键刷ROM</string>
+    <string name="shuame_guide_remind_title">刷机能让您的设备&#8230;</string>
+    <string name="shuame_guide_item_title_zxgx">彰显个性</string>
+    <string name="shuame_guide_item_msg_zxgx">系统随意更换，畅想多彩生活</string>
+    <string name="shuame_guide_item_title_jjqs">简洁清爽</string>
+    <string name="shuame_guide_item_msg_jjqs">拒绝预装应用，更多空间可用</string>
+    <string name="shuame_guide_item_title_aqhh">安全呵护</string>
+    <string name="shuame_guide_item_msg_aqhh">清除恶意软件，权限自由控制</string>
+    <string name="shuame_guide_item_title_yxlc">运行流畅</string>
+    <string name="shuame_guide_item_msg_yxlc">手机不再卡顿，体验极速快感</string>
+    <string name="shuame_guide_item_title_qssj">轻松升级</string>
+    <string name="shuame_guide_item_msg_qssj">紧跟潮流脚步，感受科技魅力</string>
+    
+	<!-- busy -->
+    <string name="string_busy_root_ing">正在Root，请稍候&#8230;</string>
+    <string name="string_busy_update_su_ing">正在更新Root组件，请稍候&#8230;</string>
+    <string name="string_busy_root_remove_ing">正在移除Root，请稍候&#8230;</string>
+    <string name="string_busy_root_check_ing">正在检查Root，请稍候&#8230;</string>
+    <string name="string_busy_font_repalceing">正在替换字体，请稍后&#8230;</string>
+    
+	<!-- recommend -->
+    <string name="recommend_title">炫耀一下</string>
+    <string name="recommend_error">分享应用不存在</string>
+    <string name="recommend_text">我的手机终于获得了Root权限啦！用Root精灵一键Root，卸载预装，加速开机妥妥的！到这下载 http://www.shuame.com/root/</string>
+    
+	<!-- other -->
+    <string name="string_percent_sign">%</string>
+    <string name="string_percent_sign_init_value">0</string>
+    <string name="string_prompt">提示</string>
+    <string name="string_done">完成</string>
+    <string name="string_retry">重试</string>
+    <string name="string_confirm">确定</string>
+    <string name="string_close">关闭</string>
+    <string name="string_cancel">取消</string>
+    <string name="string_continue">继续</string>
+    <string name="string_no_active_network">您的网络有问题哦</string>
+    <string name="string_download_fail_network_error">下载失败(网络异常)</string>
+    <string name="string_download_fail_other_error">下载失败</string>
+    <string name="string_no_sd_card">请插入SD卡再进行下载哦</string>
+    <string name="string_space_not_enough">存储空间不足，请清理后重试</string>
+    <string name="string_no_browser">您系统没有可用浏览器</string>
+    <string name="string_exit">再按一次退出Root精灵</string>
+    <string name="string_function_developing">该功能正在开发中&#8230;</string>
+    <string name="string_content_description">image description</string>
+    
+    
+    <!-- ShuameMobile -->
+    <string name="text_error_file_write_io_exception">下载出错，可能存储空间不足</string>
+    
+    <!-- 字体替换 -->
+    <string name="text_btn_replace_font">字体替换</string>
+    <string name="text_btn_preview_font">字体预览</string>
+    <string name="text_btn_onekey_replace">一键替换</string>
+    <string name="text_replace_error_font">替换失败，请重试！</string>
+    <string name="text_waiting_replace_font">等待替换</string>
+    <string name="text_font_replaceing">替换中</string>
+    <string name="text_font_replace_finish">替换完成</string>
+    <string name="text_font_dialog_message">字体安装成功后，请在主题内的混搭里找到\&quot;我的字体\&quot;，然后替换使用</string>
+    <string name="text_font_dialog_htc_message">字体安装成功，请选择字体相关选项进行替换！</string>
+    <string name="text_font_dialog_restart">%1$s 字体替换成功，重启手机后字体生效！</string>
+    <string name="text_font_not_storage">亲，空间不足哦~请前往系统设置进行清理吧！</string>
+    <string name="text_font_reboot_alert">因您的机型特殊，为了避免手机字体出现乱码，继续替换字体将在完成之后自动重启。请问您是否继续?</string>
+    <string name="text_font_continue_replace">继续替换</string>
+    <string name="text_font_size">大小:%1$s</string>
+    <string name="font_title">更多精美字体</string>
+    <string name="font_download_error">下载失败，请重试</string>
+    <string name="font_install_finish">安装完成，点击打开</string>
+    <string name="font_text">即刻体验亿万用户选择的字体管家</string>
+    <string name="donot_support">亲，您的机型已纳入手机版的适配计划&#8230;\n您可使用PC版进行刷机。</string>
+    <string name="text_downloading">下载中</string>
+    <string name="text_pending">等待下载</string>
+    <string name="text_downloaded">已下载</string>
+    <string name="downloaded_rom">已下载</string>
+    <string name="alert_dialog_msg_download_mobile_network">2G/3G网络中，下载将消耗您的流量</string>
+    <string name="alert_dialog_cancel">取消</string>
+    <string name="update_all_app_resum">继续下载</string>
+    <string name="local_rom_rename_dialog_msg">出于刷机需要已将ROM改名为“%s”并移动到sdcard根目录下。</string>
+    <string name="alert_dialog_ok">好的</string>
+    <string name="dialog_confirm">确认</string>
+    <string name="no_net">没有网络的时候感觉就像要窒息&#8230;\n快前往设置连接WIFI吧！</string>
+    <string name="setnow">马上设置</string>
+    <string name="install_zitiguanjia">正在安装字体管家</string>
+    <string name="font_stop_download">网络异常，请重新下载</string>
+    <string name="download_zitiguanjia">正在下载字体管家</string>
+    <string name="txt_tip_not_root_font">该字体需要Root权限才能替换，马上一键Root吧！</string>
+    <string name="later_to_say">晚点再说</string>
+    <string name="onekeyroot">一键Root</string>
+    <string name="alert_dialog_msg_not_network">亲，没有网络哦~请前往系统设置打开网络吧！</string>
+    <string name="alert_dialog_setting">前往设置</string>
+    <string name="text_error_sdcard_not_mounted_font">未检测到SD卡，请挂载SD卡!</string>
+    <string name="txt_sure">确定</string>
+    <string name="data_loading">数据获取中，请稍候&#8230;</string>
+    <string name="text_restart_now">立即重启</string>
+    <string name="text_restart_delay">稍后重启</string>
+    <string name="update_later">以后再说</string>
+    
+    
+    <!-- 按钮状态 -->
+    <string name="status_download">获取&#160;(&#160;%s&#160;)</string>
+    <string name="status_downloading">下载中&#160;(%s%%)</string>
+    <string name="status_pausing">正在暂停</string>
+    <string name="status_resume">继续</string>
+    <string name="status_download_pending">等待下载</string>
+    <string name="status_install">安装</string>
+    <string name="status_install_pending">等待安装</string>
+    <string name="status_installing">安装中</string>
+    <string name="status_lanch">打开</string>
+    
+    
 
-    <string name="app_name">AppManager</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <!-- 当前版本是否有新版特性 -->
+    <item name="is_new_feature" type="bool" format="boolean">false</item>
+    
 
 </resources>

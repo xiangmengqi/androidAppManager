@@ -1,51 +1,45 @@
 package com.shuame.sysapp.manager;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.app.Activity;
-import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Matrix;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
-import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.OnChildClickListener;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 
-import com.example.appmanager.R;
-import com.shuame.sysapp.manager.MyAdapter.Item;
-import com.shuame.sysapp.manager.ScriptUtil.ScriptHandler;
+import com.shuame.sysapp.manager.R;
 
-public class sysAppListActivity extends Activity implements
-		OnChildClickListener, OnClickListener {
-	private ExpandableListView expandableLv = null;
-
-	private MyAdapter adapter;
-
-	private String appInfoToString;
-
-	private SQLiteDatabase appInfoDb;
-
-	private ScriptUtil commandUtil;
+public class SysAppListActivity extends Activity implements OnClickListener {
+	private static final String TAG = "sysAppListActivity";
 
 	private String backupFilePath;
 
-	private Button mButton1, mButton2;
-
 	// 可以恢复的系统应用列表
-	List<sysAppInfo> uninstallAppList = new ArrayList<sysAppInfo>();
+	List<AppInfo> uninstallAppList;
 
 	// 系统应用列表
-	List<sysAppInfo> sysAppList = new ArrayList<sysAppInfo>();
+	List<AppInfo> sysAppList;
+
+	// 非系统应用列表
+	List<AppInfo> appList = new ArrayList<AppInfo>();
 
 	// handler
 	private Handler handler = new Handler() {
@@ -58,352 +52,211 @@ public class sysAppListActivity extends Activity implements
 		};
 	};
 
-	// checkbox点击事件回调方法接口
-	private ArrayList<String> group_list;
-
-	private Map<Integer, ArrayList<Item>> item_list;
-
-	private ArrayList<Item> child_list;
-
-	private final static int group_key = 0x7f01001;
-
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.sysapp_list_activity);
-		mButton1 = (Button) findViewById(R.id.btnConfirm);
-		mButton2 = (Button) findViewById(R.id.btnRestore);
-		mButton1.setOnClickListener(this);
-		mButton2.setOnClickListener(this);
+		setContentView(R.layout.app_manager);
 
-		// 设置显示数据
-		// expandedListView显示相关数据
-		group_list = new ArrayList<String>();
-		group_list.add("可卸载系统应用");
-		group_list.add("可恢复系统应用");
+		// 数据库创建&读取
+		getSqlData();
 
 		// 设置数据备份路径 /sdcard/rootgenuisBackup
 		// 如果目录已经存在则不做处理，否则新建目录
-		backupFilePath = initBackupPath();
+		backupFilePath = AppManagerUtil.initBackupPath();
 
-		// 数据库创建&读取
-		appInfoSql();
 		// 启动后台线程，扫描系统应用程序列表
-		new loadAppsThread(this, sysAppList, uninstallAppList, handler).start();
+		new loadAppsThread(this, sysAppList, appList, uninstallAppList, handler).start();
 	}
 
-	// 卸载app备份文件夹初始化
-	public String initBackupPath() {
-		// 检测/mnt/sdcard是否存在
-		StringBuilder strbuilder = new StringBuilder();
-		String sdcardPath = Environment.getExternalStorageDirectory()
-				.toString();
-		String backupPath = strbuilder.append(sdcardPath)
-				.append("/rootgeniusBackup")
-				.toString();
-		// 判断文件是否存在
-		File backupFilePath = new File(backupPath);
-		if (!backupFilePath.exists()) {
-			Log.i("test", "1111111111=====");
-			// backupFilePath.mkdirs();
-			// 有时候上面的方法会失效？
-			StringBuilder mkdirBuilder = new StringBuilder();
-			commandUtil = new ScriptUtil(mkdirBuilder.append(
-				"/data/local/tmp/busybox mkdir ")
-					.append(backupPath)
-					.toString(), scriptHandler);
-			// Log.i("mkdir backupPath command", chmodCommand);
-			commandUtil.execCommand();
-		}
-		Log.i("test", "backupPath: " + backupFilePath.toString());
-		return backupFilePath.toString();
-	}
+	private DataSqlManager dataSqlManager;
 
 	// 数据库相关
-	public void appInfoSql() {
+	public void getSqlData() {
 		// 读取定义的数据库
-		SystemAppSqlHelper dbHelper = new SystemAppSqlHelper(this);
-		appInfoDb = dbHelper.getWritableDatabase();
-		Log.i("test4", "appInfoCounts: " + getCount());
-		// 判断数据库中数据个数
-		if (getCount() >= 1) {
-			// 读取数据库中的数据，并另起一行显示
-			Cursor cursor = appInfoDb.rawQuery("select * from user", null);
-			cursor.moveToFirst();
-			PackageManager pm = this.getPackageManager();
-			do {
-				sysAppInfo sysappInfo = new sysAppInfo();
-				Log.i("test5", "index 0:" + cursor.getString(0) + "");
-				Log.i("test5", "index 1:" + cursor.getString(1) + "");
-				sysappInfo.appName = cursor.getString(0);
-				sysappInfo.packageName = cursor.getString(1);
-				sysappInfo.apkBackupPath = cursor.getString(2);
-				sysappInfo.sourcedir = cursor.getString(3);
-				sysappInfo.appIcon = SerializableDrawableUtils.unserializeString(cursor.getString(4));
-				uninstallAppList.add(sysappInfo);
-			} while (cursor.moveToNext());
-		}
+		dataSqlManager = DataSqlManager.getInstance(this);
+		Log.i(TAG, "appInfoCounts: " + dataSqlManager.getCount());
+		// 同步数据库与内存数据（回收站信息）
+		dataSqlManager.sync();
+		// activity中获取数据引用
+		uninstallAppList = dataSqlManager.getUninstallAppList();
+		sysAppList = dataSqlManager.getSysAppList();
 	}
 
-	public long getCount() {
-		Cursor cursor = appInfoDb.rawQuery("select count(*) from user", null);
-		cursor.moveToFirst();
-		Long count = cursor.getLong(0);
-		cursor.close();
-		return count;
-	}
+	private ImageView cursor;// 动画图片
+
+	private int offset = 0;// 动画图片偏移量
+
+	private TextView tvSystemApp, tvNormalApp;
+
+	private ViewPager mPager;// 页卡内容
+
+	private List<View> listViews; // Tab页面列表
+
+	private int currIndex = 0;// 当前页卡编号
+
+	private ListView mSysAppListView, mAppListView;
+
+	private View pageView1, pageView2;
+
+	private View itemView;
+
+	private Button btnRecycle;
+
+	private ImageView ivBack;
+
+	private MyListViewAdapter mListViewAdapter1, mListViewAdapter2;
 
 	// 刷新程序显示列表,检测用户item点击时间,并变更相应程序自启状态
 	public void initView() {
-		expandableLv = (ExpandableListView) this.findViewById(R.id.expendList1);
-		expandableLv.setOnChildClickListener(this);
-		this.findViewById(R.id.btnConfirm).setOnClickListener(this);
-		// 初始化子目录的数据表
-		initAppListData();
-		// 刷新适配器
-		initAdapter();
+		// 初始化动画
+		InitImageView();
+		// 初始化头标
+		InitTextView();
+		// 初始化ViewPager
+		InitViewPager();
+		// 初始化listView
+		InitListView();
 	}
 
-	public void initAppListData() {
-		item_list = new HashMap<Integer, ArrayList<Item>>();
-		// 被用户卸载的自启动app列表
-		if (uninstallAppList.size() > 0) {
-			child_list = new ArrayList<Item>();
-			for (sysAppInfo sysappInfo : uninstallAppList) {
-				child_list.add(new Item(sysappInfo.appName, false,
-					sysappInfo.appIcon, sysappInfo.packageName,
-					sysappInfo.sourcedir, sysappInfo.apkBackupPath));
-			}
-			item_list.put(1, child_list);
-		}
+	public void InitListView() {
+		LayoutInflater mInflater = getLayoutInflater();
+		itemView = mInflater.inflate(R.layout.list_view_item, null);
+		// 获取listView对象
+		mSysAppListView = (ListView) pageView1.findViewById(R.id.lv_sysapp);
+		mAppListView = (ListView) pageView2.findViewById(R.id.lv_applist);
+		// 回收站按钮
+		btnRecycle = (Button) pageView1.findViewById(R.id.btn_recycle);
+		btnRecycle.setOnClickListener(this);
+		setRecycleBinShow();
 
-		// 可以被卸载的系统app列表
-		if (sysAppList.size() > 0) {
-			child_list = new ArrayList<Item>();
-			for (sysAppInfo sysappInfo : sysAppList) {
-				child_list.add(new Item(sysappInfo.appName, false,
-					sysappInfo.appIcon, sysappInfo.packageName,
-					sysappInfo.sourcedir, null));
-			}
-			item_list.put(0, child_list);
-		}
+		mListViewAdapter1 = new MyListViewAdapter(sysAppList, itemView,
+			backupFilePath, this, true,true);
+		mListViewAdapter2 = new MyListViewAdapter(appList, itemView,
+			backupFilePath, this, false,true);
+		// 设置Adapter
+		mSysAppListView.setAdapter(mListViewAdapter1);
+		mAppListView.setAdapter(mListViewAdapter2);
+
 	}
 
-	ScriptHandler scriptHandler = new ScriptHandler() {
+	public void setRecycleBinShow() {
+		long sqlDataNum = dataSqlManager.getCount();
+		String btnRecycleText;
+		if (sqlDataNum == 0) {
+			btnRecycleText = "回收站";
+		} else {
+			btnRecycleText = "回收站(" + sqlDataNum + ")";
+		}
+		btnRecycle.setText(btnRecycleText);
+	}
+
+	/**
+	 * 初始化ViewPager
+	 */
+	public void InitViewPager() {
+		LayoutInflater mInflater = getLayoutInflater();
+		mPager = (ViewPager) findViewById(R.id.viewPager);
+		listViews = new ArrayList<View>();
+		View pageView1 = mInflater.inflate(R.layout.sysapp_list, null);
+		View pageView2 = mInflater.inflate(R.layout.app_list, null);
+		listViews.add(pageView1);
+		listViews.add(pageView2);
+		mPager.setAdapter(new MyPagerAdapter(listViews));
+		mPager.setCurrentItem(0);
+		mPager.setOnPageChangeListener(new MyOnPageChangeListener());
+	}
+
+	/**
+	 * 页卡切换监听
+	 */
+	public class MyOnPageChangeListener implements OnPageChangeListener {
 		@Override
-		public void onSuccess(String strCorrect) {
+		public void onPageSelected(int arg0) {
+			Animation animation = null;
+			switch (arg0) {
+			case 0:
+				if (currIndex == 1) {
+					animation = new TranslateAnimation(offset, 0, 0, 0);
+				}
+				break;
+			case 1:
+				if (currIndex == 0) {
+					animation = new TranslateAnimation(0, offset, 0, 0);
+				}
+				break;
+			}
+			currIndex = arg0;
+			animation.setFillAfter(true);// True:图片停在动画结束位置
+			animation.setDuration(300);
+			cursor.startAnimation(animation);
 		}
 
 		@Override
-		public void onFailed(String strError) {
-		}
-	};
-
-	private List<Item> clicked0;
-
-	private List<Item> clicked1;
-
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.btnConfirm:
-			clicked0 = new ArrayList<MyAdapter.Item>();
-			for (Item listItem : item_list.get(0)) {
-				if (listItem.bl == true) {
-					Log.i("text", "packageName: " + listItem.packageName
-							+ "sourceDir: " + listItem.sourcedir);
-					// 为确保命令使用正常，需要使用shuame
-					// busybox，推送busybox到/data/local/tmp/buxybox
-
-					// 确保system分区正常挂载
-					ensureSystemMounted();
-
-					// 改变相关文件权限
-					StringBuilder strbuilder1 = new StringBuilder();
-					String chmodCommand = strbuilder1.append(
-						"/data/local/tmp/busybox chmod 755 ")
-							.append(listItem.sourcedir)
-							.toString();
-					commandUtil = new ScriptUtil(chmodCommand, scriptHandler);
-					Log.i("chmod 755 xx.apk command", chmodCommand);
-					commandUtil.execCommand();
-
-					// 备份xx.apk文件到backupFilePath
-					// 在backupFilePath目录下建立listItem.sourcedir子目录
-					// 从sourcedir截取apk名
-					String apkName = listItem.sourcedir.substring(
-						listItem.sourcedir.lastIndexOf("/"),
-						listItem.sourcedir.length());
-					Log.i("apkName: ", apkName);
-
-					strbuilder1.delete(0, strbuilder1.length());
-					String apkBackupPath = strbuilder1.append(backupFilePath)
-							.append(apkName)
-							.toString();
-
-					strbuilder1.delete(0, strbuilder1.length());
-					String backupCommand = strbuilder1.append(
-						"/data/local/tmp/busybox mv ")
-							.append(listItem.sourcedir)
-							.append(" ")
-							.append(apkBackupPath)
-							.toString();
-					commandUtil = new ScriptUtil(backupCommand, scriptHandler);
-					Log.i("mv xx.apk command", backupCommand);
-					commandUtil.execCommand();
-
-					// 备份packageName数据文件夹到制定目录
-					strbuilder1.delete(0, strbuilder1.length());
-					String packageNameFilePath = strbuilder1.append(
-						"/data/data/")
-							.append(listItem.packageName)
-							.toString();
-
-					strbuilder1.delete(0, strbuilder1.length());
-					String backupCommand1 = strbuilder1.append(
-						"/data/local/tmp/busybox mv -f ")
-							.append(packageNameFilePath)
-							.append(" ")
-							.append(backupFilePath)
-							.toString();
-					commandUtil = new ScriptUtil(backupCommand1, scriptHandler);
-					Log.i("mv packageFile command", backupCommand1);
-					commandUtil.execCommand();
-
-					// 记录已选中数据到数据库
-					// 首先将数据进行序列化
-					// 将数据保存至db数据库
-					// 将appIcon数据序列化
-					String appIcon = SerializableDrawableUtils.serializeString(listItem.dw);
-					appInfoDb.execSQL(
-						"insert into user(appName,packageName,apkBackupPath,sourcedir,appIcon) values(?,?,?,?,?)",
-						new Object[] { listItem.appName, listItem.packageName,
-								apkBackupPath, listItem.sourcedir, appIcon });
-					// 将listItem中的数据bool值置为false
-					listItem.bl = false;
-					listItem.apkBackupPath = apkBackupPath;
-
-					clicked0.add(listItem);
-					if (uninstallAppList.size() > 0) {
-						item_list.get(1).add(listItem);
-					} else {
-						// item_list map[1,xx]还不存在，则进行以下操作
-						child_list = new ArrayList<Item>();
-						child_list.add(listItem);
-						item_list.put(1, child_list);
-					}
-				}
-			}
-			// 将选中项从列表删除
-			for (Item item : clicked0) {
-				item_list.get(0).remove(item);
-			}
-			break;
-		case R.id.btnRestore:
-			// 遍历可以还原应用列表，进行还原操作
-			clicked1 = new ArrayList<MyAdapter.Item>();
-			for (Item listItem : item_list.get(1)) {
-				if (listItem.bl == true) {
-					// 确保system分区正常挂载
-					ensureSystemMounted();
-
-					// 将数据文件夹mv到/data/data/目录
-					StringBuilder strbuilder = new StringBuilder();
-					String appPackageDataBackupPath = strbuilder.append(
-						backupFilePath)
-							.append("/")
-							.append(listItem.packageName)
-							.toString();
-					strbuilder.delete(0, strbuilder.length());
-					String sysAppRestoreCommand = strbuilder.append("mv -f ")
-							.append(appPackageDataBackupPath)
-							.append(" ")
-							.append("/data/data/")
-							.toString();
-					commandUtil = new ScriptUtil(sysAppRestoreCommand,
-						scriptHandler);
-					Log.i("restore package command", sysAppRestoreCommand);
-					commandUtil.execCommand();
-
-					// 将xx.apk文件push到/system/app/目录
-					strbuilder.delete(0, strbuilder.length());
-					String appApkbackupCommand = strbuilder.append("mv ")
-							.append(listItem.apkBackupPath)
-							.append(" ")
-							.append(listItem.sourcedir)
-							.toString();
-					commandUtil = new ScriptUtil(appApkbackupCommand,
-						scriptHandler);
-					Log.i("restore xx.apk command", appApkbackupCommand);
-					commandUtil.execCommand();
-
-					// 移除数据库中数据
-					// 从db数据库移除app信息
-					appInfoDb.execSQL(
-						"delete from user where packageName=?",
-						new Object[] { listItem.packageName });
-					// 将listItem中的数据bool值置为false
-					listItem.bl = false;
-					clicked1.add(listItem);
-					item_list.get(0).add(listItem);
-				}
-			}
-			// 将选中项从列表删除
-			for (Item item : clicked1) {
-				item_list.get(1).remove(item);
-			}
-			break;
-		default:
-			break;
+		public void onPageScrolled(int arg0, float arg1, int arg2) {
 		}
 
-		// 根据选中项调整列表,刷新适配器
-		initAdapter();
+		@Override
+		public void onPageScrollStateChanged(int arg0) {
+		}
 	}
 
-	public boolean onChildClick(ExpandableListView parent, View v,
-			int groupPosition, int childPosition, long id) {
-		Log.i("test3", "onChildClick groupPosition:" + groupPosition
-				+ ";childPosition:" + childPosition);
-		adapter.updateItemChecked(v);
-		return true;
+	/**
+	 * * 初始化动画
+	 */
+	private void InitImageView() {
+		cursor = (ImageView) findViewById(R.id.cusor);
+		// 获取并设置图片宽度
+		DisplayMetrics dm = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+		int screenW = dm.widthPixels;// 获取分辨率宽度
+		offset = screenW / 2; // 计算偏移量
+		Matrix matrix = new Matrix();
+		matrix.postTranslate(offset, 0);
+		cursor.setImageMatrix(matrix);// 设置动画初始位置
 	}
 
-	private OnClickListener mOnCheckboxClickListener = new OnClickListener() {
+	/**
+	 * 初始化头标
+	 */
+	private void InitTextView() {
+		tvSystemApp = (TextView) findViewById(R.id.tv_systemApp);
+		tvNormalApp = (TextView) findViewById(R.id.tv_app);
+
+		// 设置返回图标点击事件
+		ivBack = (ImageView) findViewById(R.id.iv_back);
+		ivBack.setOnClickListener(this);
+
+		tvSystemApp.setOnClickListener(new MyOnClickListener(0));
+		tvNormalApp.setOnClickListener(new MyOnClickListener(1));
+	}
+
+	/**
+	 * 头标点击监听
+	 */
+	public class MyOnClickListener implements View.OnClickListener {
+		private int index = 0;
+
+		public MyOnClickListener(int i) {
+			index = i;
+		}
 
 		@Override
 		public void onClick(View v) {
-			Log.i("test3", "mOnCheckboxClickListener");
-			adapter.updateItemChecked(v);
+			mPager.setCurrentItem(index);
 		}
 	};
 
-	// 刷新适配器
-	public void initAdapter() {
-		if (adapter == null) {
-			adapter = new MyAdapter(this, mOnCheckboxClickListener, group_list,
-				item_list);
-			expandableLv.setAdapter(adapter);
-		} else {
-			adapter.notifyDataSetChanged();
-		}
-	}
-
-	// 确保system分区挂载上
-	public void ensureSystemMounted() {
-		// 挂载system分区
-		StringBuilder strbuilder = new StringBuilder();
-		String mountSystem = strbuilder.append(
-			"/data/local/tmp/busybox mount -o remount,rw /system").toString();
-		commandUtil = new ScriptUtil(mountSystem, scriptHandler);
-		Log.i("mount system command", mountSystem);
-		commandUtil.execCommand();
-
-		// 使用系统自带命令再挂载一次system，确保system正确挂载
-		strbuilder.delete(0, strbuilder.length());
-		String reMountSystem = strbuilder.append("mount -o remount,rw /system")
-				.toString();
-		commandUtil = new ScriptUtil(reMountSystem, scriptHandler);
-		Log.i("remount system command", reMountSystem);
-		commandUtil.execCommand();
+	// 点击事件
+	public void onClick(View v) {
+		int id = v.getId();
+		if (id == R.id.btn_recycle) {
+			// 启动回收站activity
+			Intent i = new Intent(SysAppListActivity.this, RecycleBinActivity.class);
+			startActivity(i);
+		} else if (id == R.id.iv_back) {
+			// 退出当前activity
+			finish();
+		} 
+		// 根据选中项调整列表,刷新适配器
+		// initAdapter();
 	}
 }
