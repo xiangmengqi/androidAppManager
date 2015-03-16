@@ -99,7 +99,6 @@ public class loadAppsThread extends Thread {
 	}
 
 	public class PkgSizeObserver extends IPackageStatsObserver.Stub {
-
 		public void onGetStatsCompleted(PackageStats pStats, boolean succeeded)
 				throws RemoteException {
 			Long cachesize, datasize, codesize;

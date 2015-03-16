@@ -20,8 +20,6 @@ public class MyListViewAdapter extends BaseAdapter implements
 		View.OnClickListener {
 	private List<AppInfo> mListViewData;
 
-	private View mItemView;
-
 	private boolean mBottomVisiable;
 
 	private boolean mIsUninstall;
@@ -37,11 +35,9 @@ public class MyListViewAdapter extends BaseAdapter implements
 	private DataSqlManager mDataSqlManager;
 
 	// 传入ListView显示需要的数据
-	public MyListViewAdapter(List<AppInfo> ListViewData, View itemView,
-			String backupFilePath, Context context, boolean visiable,
-			boolean isUninstall) {
+	public MyListViewAdapter(List<AppInfo> ListViewData, String backupFilePath,
+			Context context, boolean visiable, boolean isUninstall) {
 		mListViewData = ListViewData;
-		mItemView = itemView;
 		mBackupFilePath = backupFilePath;
 		mContext = context;
 		mBottomVisiable = visiable;
@@ -64,8 +60,8 @@ public class MyListViewAdapter extends BaseAdapter implements
 		ViewHolder holder = null;
 		if (view == null) {
 			holder = new ViewHolder();
-			// set view
-			view = mItemView;
+			view = ((Activity) mContext).getLayoutInflater().inflate(
+				R.layout.list_view_item, null);
 			holder.appName = (TextView) view.findViewById(R.id.tv_appName);
 			holder.appIcon = (ImageView) view.findViewById(R.id.iv_appIcon);
 			holder.packageSize = (TextView) view.findViewById(R.id.tv_appSize);
@@ -86,13 +82,12 @@ public class MyListViewAdapter extends BaseAdapter implements
 			holder.uninstall.setText("还原");
 		}
 
-		if (mBottomVisiable) {
+		if (!mBottomVisiable) {
 			holder.appIntroduction.setVisibility(View.GONE);
 		}
 
 		holder.uninstall.setOnClickListener(this);
 		holder.uninstall.setTag(VIEW_TAG_ID, position);
-
 		return view;
 	}
 
@@ -156,7 +151,7 @@ public class MyListViewAdapter extends BaseAdapter implements
 
 			// 更新回收站button显示
 			// mSysAppListActivity = (SysAppListActivity) mContext;
-			mSysAppListActivity.setRecycleBinShow();
+			// mSysAppListActivity.setRecycleBinShow();
 			// 刷新listView列表显示
 			this.notifyDataSetChanged();
 		}

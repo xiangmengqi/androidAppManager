@@ -97,8 +97,6 @@ public class SysAppListActivity extends Activity implements OnClickListener {
 
 	private View pageView1, pageView2;
 
-	private View itemView;
-
 	private Button btnRecycle;
 
 	private ImageView ivBack;
@@ -119,7 +117,6 @@ public class SysAppListActivity extends Activity implements OnClickListener {
 
 	public void InitListView() {
 		LayoutInflater mInflater = getLayoutInflater();
-		itemView = mInflater.inflate(R.layout.list_view_item, null);
 		// 获取listView对象
 		mSysAppListView = (ListView) pageView1.findViewById(R.id.lv_sysapp);
 		mAppListView = (ListView) pageView2.findViewById(R.id.lv_applist);
@@ -128,10 +125,10 @@ public class SysAppListActivity extends Activity implements OnClickListener {
 		btnRecycle.setOnClickListener(this);
 		setRecycleBinShow();
 
-		mListViewAdapter1 = new MyListViewAdapter(sysAppList, itemView,
-			backupFilePath, this, true,true);
-		mListViewAdapter2 = new MyListViewAdapter(appList, itemView,
-			backupFilePath, this, false,true);
+		mListViewAdapter1 = new MyListViewAdapter(sysAppList, backupFilePath,
+			this, true, true);
+		mListViewAdapter2 = new MyListViewAdapter(appList, backupFilePath,
+			this, false, true);
 		// 设置Adapter
 		mSysAppListView.setAdapter(mListViewAdapter1);
 		mAppListView.setAdapter(mListViewAdapter2);
@@ -156,8 +153,8 @@ public class SysAppListActivity extends Activity implements OnClickListener {
 		LayoutInflater mInflater = getLayoutInflater();
 		mPager = (ViewPager) findViewById(R.id.viewPager);
 		listViews = new ArrayList<View>();
-		View pageView1 = mInflater.inflate(R.layout.sysapp_list, null);
-		View pageView2 = mInflater.inflate(R.layout.app_list, null);
+		pageView1 = mInflater.inflate(R.layout.sysapp_list, null);
+		pageView2 = mInflater.inflate(R.layout.app_list, null);
 		listViews.add(pageView1);
 		listViews.add(pageView2);
 		mPager.setAdapter(new MyPagerAdapter(listViews));
@@ -250,12 +247,13 @@ public class SysAppListActivity extends Activity implements OnClickListener {
 		int id = v.getId();
 		if (id == R.id.btn_recycle) {
 			// 启动回收站activity
-			Intent i = new Intent(SysAppListActivity.this, RecycleBinActivity.class);
+			Intent i = new Intent(SysAppListActivity.this,
+				RecycleBinActivity.class);
 			startActivity(i);
 		} else if (id == R.id.iv_back) {
 			// 退出当前activity
 			finish();
-		} 
+		}
 		// 根据选中项调整列表,刷新适配器
 		// initAdapter();
 	}

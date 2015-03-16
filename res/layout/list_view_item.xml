@@ -13,8 +13,8 @@
 
         <ImageView
             android:id="@+id/iv_appIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_weight="1" />
 
         <LinearLayout
@@ -38,17 +38,17 @@
 
         <Button
             android:id="@+id/btn_uninstall"
-            android:focusable="false"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:focusable="false"
             android:text="卸载" />
     </LinearLayout>
-    
+
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="2dp"
         android:background="@color/black_text_color" />
-    
+
     <TextView
         android:id="@+id/tv_appIntro"
         android:layout_width="fill_parent"

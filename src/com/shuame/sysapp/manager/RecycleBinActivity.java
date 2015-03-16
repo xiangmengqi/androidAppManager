@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -30,14 +31,11 @@ public class RecycleBinActivity extends Activity implements OnClickListener {
 	// 可以恢复的系统应用列表
 	List<AppInfo> uninstallAppList;
 
-	// 系统应用列表
-	List<AppInfo> sysAppList;
-
 	DataSqlManager dataSqlManager;
 
-	private View itemView;
-
 	private Button btnCleanAll;
+
+	private ImageView ivBack;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -49,15 +47,20 @@ public class RecycleBinActivity extends Activity implements OnClickListener {
 		// 设置title为回收站
 		tvTitle = (TextView) findViewById(R.id.tv_title);
 		tvTitle.setText("回收站");
+
 		lvRecycleBin = (ListView) findViewById(R.id.lv_recycle_list);
+		// 设置清空回收站按钮
 		btnCleanAll = (Button) findViewById(R.id.btn_clean_all);
+		btnCleanAll.setOnClickListener(this);
+
+		// 设置返回图标点击事件
+		ivBack = (ImageView) findViewById(R.id.iv_back);
+		ivBack.setOnClickListener(this);
 
 		LayoutInflater mInflater = getLayoutInflater();
-		itemView = mInflater.inflate(R.layout.list_view_item, null);
 		dataSqlManager = DataSqlManager.getInstance(this);
 		uninstallAppList = dataSqlManager.getUninstallAppList();
-		sysAppList = dataSqlManager.getSysAppList();
-		lvRecycleBinAdapter = new MyListViewAdapter(uninstallAppList, itemView,
+		lvRecycleBinAdapter = new MyListViewAdapter(uninstallAppList,
 			AppManagerUtil.initBackupPath(), this, false, false);
 		// 设置Adapter
 		lvRecycleBin.setAdapter(lvRecycleBinAdapter);
