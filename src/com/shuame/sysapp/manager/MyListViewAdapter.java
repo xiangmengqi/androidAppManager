@@ -30,8 +30,6 @@ public class MyListViewAdapter extends BaseAdapter implements
 
 	private Context mContext;
 
-	private SysAppListActivity mSysAppListActivity;
-
 	private DataSqlManager mDataSqlManager;
 
 	// 传入ListView显示需要的数据
@@ -127,8 +125,7 @@ public class MyListViewAdapter extends BaseAdapter implements
 			// ....
 
 			// 更新回收站button显示
-			mSysAppListActivity = (SysAppListActivity) mContext;
-			mSysAppListActivity.setRecycleBinShow();
+			((SysAppListActivity) mContext).setRecycleBinShow();
 			// 刷新listView列表显示
 			this.notifyDataSetChanged();
 		} else if ((mBottomVisiable == false) && (mIsUninstall == true)) {

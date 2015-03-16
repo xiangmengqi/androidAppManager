@@ -1,7 +1,6 @@
 package com.shuame.sysapp.manager;
 
 import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
 
 public class AppInfo {
 	public String packageName;

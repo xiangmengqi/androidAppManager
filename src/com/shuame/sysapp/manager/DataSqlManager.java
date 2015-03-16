@@ -11,7 +11,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.view.inputmethod.InputBinding;
 
 /**
  * @author JackXiang
@@ -27,19 +26,26 @@ public class DataSqlManager {
 	private SQLiteDatabase db;
 
 	// 可以恢复的系统应用列表
-	List<AppInfo> uninstallAppList;
+	private List<AppInfo> uninstallAppList;
 
 	// 系统应用列表
-	List<AppInfo> sysAppList;
+	private List<AppInfo> sysAppList;
 
+	// 普通应用列表
+	private List<AppInfo> appList;
+		
 	// 单例化DataSqlManager
 	private DataSqlManager(Context context) {
 		sqlHelper = new SystemAppSqlHelper(context);
 		db = sqlHelper.getReadableDatabase();
 		uninstallAppList = new ArrayList<AppInfo>();
 		sysAppList = new ArrayList<AppInfo>();
+		appList = new ArrayList<AppInfo>();
+		sync();
+		// 启动后台线程，扫描系统应用程序列表
+		new loadAppsThread(context, appList, sysAppList, uninstallAppList).start();
 	};
-
+	
 	public SQLiteDatabase getSqlDataBase(Context context) {
 		return db;
 	}
@@ -72,7 +78,7 @@ public class DataSqlManager {
 	}
 
 	// 每次打开app时候，同步内存和数据库中的数据
-	public void sync(){
+	private void sync() {
 		if (getCount() >= 1) {
 			// 读取数据库中的数据，并另起一行显示
 			Cursor cursor = this.getCursor();
@@ -83,12 +89,16 @@ public class DataSqlManager {
 				Log.i("test5", "index 1:" + cursor.getString(1) + "");
 				this.readFromDb(cursor, sysappInfo);
 				uninstallAppList.add(sysappInfo);
-			} while (cursor.moveToNext());	
+			} while (cursor.moveToNext());
 		}
 	}
 
 	public List<AppInfo> getSysAppList() {
 		return sysAppList;
+	}
+
+	public List<AppInfo> getAppList() {
+		return appList;
 	}
 
 	public List<AppInfo> getUninstallAppList() {

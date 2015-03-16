@@ -5,8 +5,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,21 +23,16 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.shuame.sysapp.manager.R;
-
 public class SysAppListActivity extends Activity implements OnClickListener {
 	private static final String TAG = "sysAppListActivity";
 
 	private String backupFilePath;
 
-	// 可以恢复的系统应用列表
-	List<AppInfo> uninstallAppList;
+	// 非系统应用列表
+	List<AppInfo> appList;
 
 	// 系统应用列表
 	List<AppInfo> sysAppList;
-
-	// 非系统应用列表
-	List<AppInfo> appList = new ArrayList<AppInfo>();
 
 	// handler
 	private Handler handler = new Handler() {
@@ -52,6 +45,10 @@ public class SysAppListActivity extends Activity implements OnClickListener {
 		};
 	};
 
+	public Handler getHandler() {
+		return this.handler;
+	}
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.app_manager);
@@ -62,9 +59,10 @@ public class SysAppListActivity extends Activity implements OnClickListener {
 		// 设置数据备份路径 /sdcard/rootgenuisBackup
 		// 如果目录已经存在则不做处理，否则新建目录
 		backupFilePath = AppManagerUtil.initBackupPath();
-
-		// 启动后台线程，扫描系统应用程序列表
-		new loadAppsThread(this, sysAppList, appList, uninstallAppList, handler).start();
+		// 不是第一次进入此activity
+		if (isInitView == false) {
+			initView();
+		}
 	}
 
 	private DataSqlManager dataSqlManager;
@@ -73,12 +71,11 @@ public class SysAppListActivity extends Activity implements OnClickListener {
 	public void getSqlData() {
 		// 读取定义的数据库
 		dataSqlManager = DataSqlManager.getInstance(this);
+
 		Log.i(TAG, "appInfoCounts: " + dataSqlManager.getCount());
 		// 同步数据库与内存数据（回收站信息）
-		dataSqlManager.sync();
-		// activity中获取数据引用
-		uninstallAppList = dataSqlManager.getUninstallAppList();
 		sysAppList = dataSqlManager.getSysAppList();
+		appList = dataSqlManager.getAppList();
 	}
 
 	private ImageView cursor;// 动画图片
@@ -103,6 +100,8 @@ public class SysAppListActivity extends Activity implements OnClickListener {
 
 	private MyListViewAdapter mListViewAdapter1, mListViewAdapter2;
 
+	private boolean isInitView = false;
+
 	// 刷新程序显示列表,检测用户item点击时间,并变更相应程序自启状态
 	public void initView() {
 		// 初始化动画
@@ -113,6 +112,7 @@ public class SysAppListActivity extends Activity implements OnClickListener {
 		InitViewPager();
 		// 初始化listView
 		InitListView();
+		isInitView = true;
 	}
 
 	public void InitListView() {

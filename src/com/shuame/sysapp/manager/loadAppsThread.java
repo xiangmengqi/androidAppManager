@@ -8,8 +8,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageStats;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.PackageStats;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.text.format.Formatter;
@@ -30,14 +30,14 @@ public class loadAppsThread extends Thread {
 
 	private Handler handler;
 
-	public loadAppsThread(Context context, List<AppInfo> sysAppList,
-			List<AppInfo> appList, List<AppInfo> uninstallAppList,
-			Handler handler) {
+	public loadAppsThread(Context context, List<AppInfo> appList,
+			List<AppInfo> sysAppList, List<AppInfo> uninstallAppList) {
 		this.context = context;
 		this.sysAppList = sysAppList;
 		this.appList = appList;
-		this.handler = handler;
 		this.uninstallAppList = uninstallAppList;
+		this.sysAppList = sysAppList;
+		this.handler = (Handler) ((SysAppListActivity) context).getHandler();
 	}
 
 	public void run() {
