@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.shuame.sysapp.manager.R;
+import com.shuame.sysapp.manager.ScriptUtil.ScriptHandler;
 
 /**
  * @author JackXiang
@@ -70,12 +71,13 @@ public class RecycleBinActivity extends Activity implements OnClickListener {
 		// 点击事件处理
 		int id = v.getId();
 		if (id == R.id.btn_clean_all) {
-			// 清空回收站所有数据
-
+			// 清空回收站所有数据(直接删除备份文件,清空数据库，清空内存中卸载app数据，最后刷下列表显示)
+			// AppManagerUtil.rmBackupFile();
+			dataSqlManager.resetData();
+			lvRecycleBinAdapter.notifyDataSetChanged();
 		} else if (id == R.id.iv_back) {
 			// 退出当前activity
 			finish();
 		}
 	}
-
 }

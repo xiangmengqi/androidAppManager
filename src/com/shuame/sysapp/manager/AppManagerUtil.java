@@ -6,7 +6,9 @@ package com.shuame.sysapp.manager;
 import java.io.File;
 
 import android.R.integer;
+import android.R.string;
 import android.os.Environment;
+import android.text.GetChars;
 import android.util.Log;
 
 import com.shuame.sysapp.manager.ScriptUtil.ScriptHandler;
@@ -16,10 +18,25 @@ import com.shuame.sysapp.manager.ScriptUtil.ScriptHandler;
  * @version $1.0, 2015年3月11日 2015年3月11日 GMT+08:00
  * @since JDK5
  */
+
 public class AppManagerUtil {
 
-	// 卸载app方法
-	public static void uninstallApp(String sourcedir, String apkBackupPath,
+//	private static String mBackupFilePath;
+
+//	public static void rmBackupFile() {
+//		ScriptUtil commandUtil;
+//		StringBuilder strbuilder = new StringBuilder();
+//		String rmCommand = strbuilder.append("/data/local/tmp/busybox rm -rf ")
+//				.append(mBackupFilePath)
+//				.toString();
+//		commandUtil = new ScriptUtil(rmCommand, scriptHandler);
+//		Log.i("rm BackupFile", rmCommand);
+//		commandUtil.execCommand();
+//	}
+
+	// 实际执行卸载还原的模块
+	// 直接判断app.apk文件是否存在,如system/app/app.apk文件不存在，且成功备份了则
+	public static Boolean uninstallApp(String sourcedir, String apkBackupPath,
 			String backupFilePath, String packageName) {
 		ScriptUtil commandUtil;
 		// 为确保命令使用正常，需要使用shuame
@@ -47,20 +64,56 @@ public class AppManagerUtil {
 		commandUtil.execCommand();
 
 		// 备份packageName数据文件夹到制定目录
+		// 打包 (.tar.gz)
 		strbuilder1.delete(0, strbuilder1.length());
 		String packageNameFilePath = strbuilder1.append("/data/data/")
 				.append(packageName)
 				.toString();
 
 		strbuilder1.delete(0, strbuilder1.length());
-		String backupCommand1 = strbuilder1.append(
-			"/data/local/tmp/busybox mv -f ")
-				.append(packageNameFilePath)
-				.append(" ")
-				.append(backupFilePath)
+		String backupFilePathTarGz = strbuilder1.append(backupFilePath)
+				.append("/")
+				.append(packageName)
+				.append(".tar.gz")
 				.toString();
+
+		strbuilder1.delete(0, strbuilder1.length());
+		String excludeTargz = strbuilder1.append("--exclude=")
+				.append(packageNameFilePath)
+				.append("/lib")
+				.toString();
+
+		strbuilder1.delete(0, strbuilder1.length());
+		String backupCommand1 = strbuilder1.append(
+			"/data/local/tmp/busybox tar -cvf ")
+				.append(backupFilePathTarGz)
+				.append(" ")
+				.append(excludeTargz)
+				.append(" ")
+				.append(packageNameFilePath)
+				.toString();
+
 		commandUtil = new ScriptUtil(backupCommand1, scriptHandler);
 		Log.i("mv packageFile command", backupCommand1);
+		commandUtil.execCommand();
+
+		// 不是秒速完成的，所以需要等待
+		if (((new File(sourcedir)).exists() == false)
+				&& ((new File(apkBackupPath)).exists() == true)) {
+			return true;
+		}
+		return false;
+	}
+
+	public static void uninstallNormalApp(String packageName) {
+		ScriptUtil commandUtil;
+		StringBuilder strbuilder = new StringBuilder();
+		String uninstallCommand = strbuilder.append(
+			"pm uninstall ")
+				.append(packageName)
+				.toString();
+		commandUtil = new ScriptUtil(uninstallCommand, scriptHandler);
+		Log.i("uninstall normal app", uninstallCommand);
 		commandUtil.execCommand();
 	}
 
@@ -81,22 +134,24 @@ public class AppManagerUtil {
 	}
 
 	// 还原app方法
-	public static void restoreApp(String sourcedir, String apkBackupPath,
+	public static boolean restoreApp(String sourcedir, String apkBackupPath,
 			String backupFilePath, String packageName) {
 		ScriptUtil commandUtil;
 		// 确保system分区正常挂载
 		ensureSystemMounted();
 
-		// 将数据文件夹mv到/data/data/目录
+		// 解压缩数据
 		StringBuilder strbuilder = new StringBuilder();
-		String appPackageDataBackupPath = strbuilder.append(backupFilePath)
+		String backupFilePathTarGz = strbuilder.append(backupFilePath)
 				.append("/")
 				.append(packageName)
+				.append(".tar.gz")
 				.toString();
+
 		strbuilder.delete(0, strbuilder.length());
-		String sysAppRestoreCommand = strbuilder.append("mv -f ")
-				.append(appPackageDataBackupPath)
-				.append(" ")
+		String sysAppRestoreCommand = strbuilder.append("tar -zxvf ")
+				.append(backupFilePathTarGz)
+				.append(" -C ")
 				.append("/data/data/")
 				.toString();
 		commandUtil = new ScriptUtil(sysAppRestoreCommand, scriptHandler);
@@ -113,6 +168,13 @@ public class AppManagerUtil {
 		commandUtil = new ScriptUtil(appApkbackupCommand, scriptHandler);
 		Log.i("restore xx.apk command", appApkbackupCommand);
 		commandUtil.execCommand();
+
+		// 判断是否还原成功
+		if (((new File(sourcedir)).exists() == true)
+				&& ((new File(apkBackupPath)).exists() == false)) {
+			return true;
+		}
+		return false;
 	}
 
 	// 确保system分区挂载上
@@ -148,21 +210,39 @@ public class AppManagerUtil {
 		// 判断文件是否存在
 		File backupFilePath = new File(backupPath);
 		if (!backupFilePath.exists()) {
-			Log.i("test", "1111111111=====");
 			// backupFilePath.mkdirs();
 			// 有时候上面的方法会失效？
 			strbuilder.delete(0, strbuilder.length());
-			commandUtil = new ScriptUtil(strbuilder.append(
+			String mkdirCommand = strbuilder.append(
 				"/data/local/tmp/busybox mkdir ")
 					.append(backupPath)
-					.toString(), scriptHandler);
-			// Log.i("mkdir backupPath command", chmodCommand);
+					.toString();
+			commandUtil = new ScriptUtil(mkdirCommand, scriptHandler);
+			Log.i("mkdirCommand", mkdirCommand);
 			commandUtil.execCommand();
 		}
+		// 如以上的路径不存在则直接使用/sdcard路径
+		if (!backupFilePath.exists()) {
+			backupPath = new String("/sdcard/rootgeniusBackup");
+			backupFilePath = new File(backupPath);
+			if (!backupFilePath.exists()) {
+				// backupFilePath.mkdirs();
+				// 有时候上面的方法会失效？
+				strbuilder.delete(0, strbuilder.length());
+				String mkdirSdcard = strbuilder.append(
+					"/data/local/tmp/busybox mkdir ")
+						.append(backupPath)
+						.toString();
+				Log.i("mkdirCommand", mkdirSdcard);
+				commandUtil = new ScriptUtil(mkdirSdcard, scriptHandler);
+				commandUtil.execCommand();
+			}
+		}
 		Log.i("test", "backupPath: " + backupFilePath.toString());
+//		mBackupFilePath = backupFilePath.toString();
 		return backupFilePath.toString();
 	}
-
+	
 	static ScriptHandler scriptHandler = new ScriptHandler() {
 		@Override
 		public void onSuccess(String strCorrect) {

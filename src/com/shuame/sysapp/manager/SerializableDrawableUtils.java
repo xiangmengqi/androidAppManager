@@ -6,7 +6,6 @@ package com.shuame.sysapp.manager;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Formatter;
 
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;

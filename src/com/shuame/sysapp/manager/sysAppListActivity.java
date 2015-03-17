@@ -2,6 +2,9 @@ package com.shuame.sysapp.manager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+
+import com.shuame.sysapp.manager.ScriptUtil.ScriptHandler;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -59,6 +62,7 @@ public class SysAppListActivity extends Activity implements OnClickListener {
 		// 设置数据备份路径 /sdcard/rootgenuisBackup
 		// 如果目录已经存在则不做处理，否则新建目录
 		backupFilePath = AppManagerUtil.initBackupPath();
+		
 		// 不是第一次进入此activity
 		if (isInitView == false) {
 			initView();
@@ -257,4 +261,4 @@ public class SysAppListActivity extends Activity implements OnClickListener {
 		// 根据选中项调整列表,刷新适配器
 		// initAdapter();
 	}
-}
+}  

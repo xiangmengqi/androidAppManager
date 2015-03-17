@@ -47,7 +47,7 @@
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="2dp"
-        android:background="@color/black_text_color" />
+        android:background="#dcdcdc" />
 
     <TextView
         android:id="@+id/tv_appIntro"
@@ -59,6 +59,6 @@
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="5dp"
-        android:background="@color/black_toolbar_bg_color" />
+        android:background="#dcdcdc" />
 
 </LinearLayout>

@@ -10,17 +10,21 @@ import android.util.Log;
 
 public class ScriptUtil {
 	public static final String REMOVE_APP_LIMIT = "chmod 771 /system/app \n";
+
 	public static final String ADD_APP_LIMIT = "chmod 551 /system/app \n";
 
 	public static final String TAG = "ScriptUtil";
+
 	/**
 	 * 输出信息接口的对象
 	 */
 	private ScriptHandler scriptHandler = null;
+
 	/**
 	 * Handler对象
 	 */
 	private Handler handler = null;
+
 	/**
 	 * 输入的命令
 	 */
@@ -60,16 +64,19 @@ public class ScriptUtil {
 		 * 进程对象
 		 */
 		private Process process = null;
+
 		/**
 		 * 正确信息缓冲流
 		 */
 		private BufferedReader brCorrect = null;
+
 		/**
 		 * 错误信息缓冲流
 		 */
 		private BufferedReader brError = null;
 
 		private DataOutputStream dos = null;
+
 		/**
 		 * 0：成功 非0：失败
 		 */
@@ -85,9 +92,9 @@ public class ScriptUtil {
 				dos.writeBytes(strCommand + " ");
 
 				brCorrect = new BufferedReader(new InputStreamReader(
-						process.getInputStream()));
+					process.getInputStream()));
 				brError = new BufferedReader(new InputStreamReader(
-						process.getErrorStream()));
+					process.getErrorStream()));
 				String strTemp = new String();
 
 				dos.flush();
@@ -108,7 +115,7 @@ public class ScriptUtil {
 				Log.d(TAG, "strTempCorrect " + strTempCorrect.toString());
 				Log.e(TAG, "strTempError " + strTempError.toString());
 				handler.post(new ScriptRunnable(code,
-						strTempCorrect.toString(), strTempError.toString()));
+					strTempCorrect.toString(), strTempError.toString()));
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (InterruptedException e) {
@@ -140,7 +147,9 @@ public class ScriptUtil {
 
 	private class ScriptRunnable implements Runnable {
 		private int resultCode;
+
 		private String strCorrect;
+
 		private String strError;
 
 		/**

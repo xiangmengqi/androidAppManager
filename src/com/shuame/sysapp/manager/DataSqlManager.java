@@ -33,7 +33,7 @@ public class DataSqlManager {
 
 	// 普通应用列表
 	private List<AppInfo> appList;
-		
+
 	// 单例化DataSqlManager
 	private DataSqlManager(Context context) {
 		sqlHelper = new SystemAppSqlHelper(context);
@@ -45,7 +45,7 @@ public class DataSqlManager {
 		// 启动后台线程，扫描系统应用程序列表
 		new loadAppsThread(context, appList, sysAppList, uninstallAppList).start();
 	};
-	
+
 	public SQLiteDatabase getSqlDataBase(Context context) {
 		return db;
 	}
@@ -60,6 +60,16 @@ public class DataSqlManager {
 
 	public Cursor getCursor() {
 		return db.rawQuery("select * from user", null);
+	}
+
+	// 清空数据库
+	public void resetData() {
+		// 删除user表单
+		String sql = new String("DROP TABLE IF EXISTS user");
+		db.execSQL(sql);
+
+		// 清空内存中数据
+		uninstallAppList.clear();
 	}
 
 	public void readFromDb(Cursor cursor, AppInfo sysappInfo) {
@@ -116,7 +126,7 @@ public class DataSqlManager {
 		sysAppList.remove(sysappInfo);
 		uninstallAppList.add(sysappInfo);
 	}
-
+	
 	public void dbDeleteItem(AppInfo sysappInfo) {
 		// 移除数据库中数据
 		db.execSQL(
@@ -126,7 +136,12 @@ public class DataSqlManager {
 		sysAppList.add(sysappInfo);
 		uninstallAppList.remove(sysappInfo);
 	}
+	
+	public void DeleteNormalAppitem(AppInfo sysappInfo) {
+		appList.remove(sysappInfo);
+	}
 
+	
 	public class SystemAppSqlHelper extends SQLiteOpenHelper {
 
 		private static final String dbName = "sysAppInfo.db";
