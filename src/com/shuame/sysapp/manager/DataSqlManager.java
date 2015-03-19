@@ -37,13 +37,13 @@ public class DataSqlManager {
 	// 单例化DataSqlManager
 	private DataSqlManager(Context context) {
 		sqlHelper = new SystemAppSqlHelper(context);
-		db = sqlHelper.getReadableDatabase();
+		db = sqlHelper.getWritableDatabase();
 		uninstallAppList = new ArrayList<AppInfo>();
 		sysAppList = new ArrayList<AppInfo>();
 		appList = new ArrayList<AppInfo>();
 		sync();
 		// 启动后台线程，扫描系统应用程序列表
-		new loadAppsThread(context, appList, sysAppList, uninstallAppList).start();
+		new ThreadLoadApplist(context, appList, sysAppList, uninstallAppList).start();
 	};
 
 	public SQLiteDatabase getSqlDataBase(Context context) {
@@ -52,10 +52,12 @@ public class DataSqlManager {
 
 	public long getCount() {
 		Cursor cursor = db.rawQuery("select count(*) from user", null);
-		cursor.moveToFirst();
-		Long count = cursor.getLong(0);
-		cursor.close();
-		return count;
+		if (cursor != null && cursor.moveToFirst()) {
+			Long count = cursor.getLong(0);
+			cursor.close();
+			return count;
+		}
+		return 0;
 	}
 
 	public Cursor getCursor() {
@@ -65,9 +67,7 @@ public class DataSqlManager {
 	// 清空数据库
 	public void resetData() {
 		// 删除user表单
-		String sql = new String("DROP TABLE IF EXISTS user");
-		db.execSQL(sql);
-
+		sqlHelper.reSet();
 		// 清空内存中数据
 		uninstallAppList.clear();
 	}
@@ -126,7 +126,7 @@ public class DataSqlManager {
 		sysAppList.remove(sysappInfo);
 		uninstallAppList.add(sysappInfo);
 	}
-	
+
 	public void dbDeleteItem(AppInfo sysappInfo) {
 		// 移除数据库中数据
 		db.execSQL(
@@ -136,17 +136,18 @@ public class DataSqlManager {
 		sysAppList.add(sysappInfo);
 		uninstallAppList.remove(sysappInfo);
 	}
-	
+
 	public void DeleteNormalAppitem(AppInfo sysappInfo) {
 		appList.remove(sysappInfo);
 	}
 
-	
 	public class SystemAppSqlHelper extends SQLiteOpenHelper {
 
 		private static final String dbName = "sysAppInfo.db";
 
 		private static final int version = 1; // 数据库版本
+
+		private final String TAG = SystemAppSqlHelper.class.getSimpleName();
 
 		public SystemAppSqlHelper(Context context) {
 			super(context, dbName, null, version);
@@ -155,13 +156,24 @@ public class DataSqlManager {
 		public void onCreate(SQLiteDatabase db) {
 			// 创建数据库sql语句
 			// drawable类型的appIcon需要序列化后才能存入sqlite数据库
+			Log.e(TAG, "onCreate start");
 			String sql = "create table user(appName String,packageName String,apkBackupPath String,sourcedir String,appIcon String)";
 			// 执行创建数据库操作
 			db.execSQL(sql);
+			Log.e(TAG, "onCreate end");
 		}
 
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+		}
+
+		public void reSet() {
+			try {
+				db.execSQL("DROP TABLE IF EXISTS user");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			onCreate(db);
 		}
 	}
 }

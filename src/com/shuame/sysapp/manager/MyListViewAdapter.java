@@ -2,8 +2,6 @@ package com.shuame.sysapp.manager;
 
 import java.util.List;
 
-import com.shuame.sysapp.manager.ScriptUtil.ScriptHandler;
-
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
@@ -12,7 +10,9 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.shuame.sysapp.manager.AppManagerUtil.ThreadRestore;
+import com.shuame.sysapp.manager.ShellUtils.CommandResult;
 
 public class MyListViewAdapter extends BaseAdapter implements
 		View.OnClickListener {
@@ -102,7 +102,8 @@ public class MyListViewAdapter extends BaseAdapter implements
 		public TextView appIntroduction;
 	}
 
-	@Override
+	CommandResult result;
+
 	public void onClick(View view) {
 		int position = (Integer) view.getTag(VIEW_TAG_ID);
 		AppInfo listItem = getItem(position);
@@ -111,27 +112,15 @@ public class MyListViewAdapter extends BaseAdapter implements
 			listItem = mListViewData.get(position);
 			listItem.apkBackupPath = AppManagerUtil.getApkBackupFilePath(
 				mBackupFilePath, listItem.sourcedir);
-			Boolean iSuccess = AppManagerUtil.uninstallApp(
-				listItem.sourcedir, listItem.apkBackupPath, mBackupFilePath,
-				listItem.packageName);
+
+			// 后台启动新线程，后台执行卸载命令
+			new AppManagerUtil.ThreadUninstall(mContext, mBackupFilePath,
+				listItem, position, true).start();
+
+			// 被点击item开始显示卸载中动画(button键位置显示转圈动画)
+			// 转圈动画
 
 			// 如卸载成功则刷新列表，显示卸载动画，更新数据库数据；如下载失败则弹窗提示
-			if (iSuccess) {
-				// 记录已选中数据到数据库, 首先将数据进行序列化将数据保存至db数据库,将appIcon数据序列化
-				mDataSqlManager = DataSqlManager.getInstance(mContext);
-				mDataSqlManager.dbInsertItem(listItem);
-
-				// 动画逻辑后续在此添加
-				// ....
-
-				// 更新回收站button显示
-				((SysAppListActivity) mContext).setRecycleBinShow();
-				// 刷新listView列表显示
-				this.notifyDataSetChanged();
-			} else {
-				// toast提示失败
-				Toast.makeText(mContext, "卸载应用失败", Toast.LENGTH_SHORT).show();
-			}
 
 		} else if ((mBottomVisiable == false) && (mIsUninstall == true)) {
 			// 普通应用卸载,直接采用pm uninstall packageName
@@ -144,25 +133,10 @@ public class MyListViewAdapter extends BaseAdapter implements
 			listItem = mListViewData.get(position);
 			listItem.apkBackupPath = AppManagerUtil.getApkBackupFilePath(
 				mBackupFilePath, listItem.sourcedir);
-			Boolean iSuccess = AppManagerUtil.restoreApp(
-				listItem.sourcedir, listItem.apkBackupPath, mBackupFilePath,
-				listItem.packageName);
 
-			if (iSuccess) {
-				// 将信息从数据库中清除
-				mDataSqlManager = DataSqlManager.getInstance(mContext);
-				mDataSqlManager.dbDeleteItem(listItem);
-
-				// 动画逻辑后续在此添加
-				// ....
-
-				// 更新回收站button显示
-				((SysAppListActivity) mContext).setRecycleBinShow();
-				// 刷新listView列表显示
-				this.notifyDataSetChanged();
-			} else {
-				Toast.makeText(mContext, "还原应用失败", Toast.LENGTH_SHORT).show();
-			}
+			// 后台启动新线程，后台执行卸载命令
+			new AppManagerUtil.ThreadRestore(mContext, mBackupFilePath,
+				listItem).start();
 
 		}
 	}

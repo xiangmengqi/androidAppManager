@@ -2,11 +2,9 @@ package com.shuame.sysapp.manager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
-
-import com.shuame.sysapp.manager.ScriptUtil.ScriptHandler;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Matrix;
 import android.os.Bundle;
@@ -25,6 +23,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.shuame.sysapp.manager.ShellUtils.CommandResult;
 
 public class SysAppListActivity extends Activity implements OnClickListener {
 	private static final String TAG = "sysAppListActivity";
@@ -32,24 +33,56 @@ public class SysAppListActivity extends Activity implements OnClickListener {
 	private String backupFilePath;
 
 	// 非系统应用列表
-	List<AppInfo> appList;
+	private List<AppInfo> appList;
 
 	// 系统应用列表
-	List<AppInfo> sysAppList;
+	private List<AppInfo> sysAppList;
 
-	// handler
-	private Handler handler = new Handler() {
+	// 回调消息
+	private CommandResult commandResult;
+
+	private Context mContext = this;
+
+	// 主线程消息队列
+	private Handler mHandler = new Handler() {
 		public void handleMessage(Message msg) {
 			// 收到消息队列反馈则继续UI线程的操作
-			if (msg.what == 0) {
+			switch (msg.what) {
+			case AppConstants.MSG_ON_BACKGROUND_CALCULATION:
 				// 显示扫描结果
 				initView();
+				break;
+			// 系统应用卸载队列
+			case AppConstants.MSG_ON_UNINSTALL_SYSTEM_APP:
+				commandResult = (CommandResult) msg.obj;
+				// 判断卸载结果并分别处理
+				// 此处加上动画
+				if (commandResult.getActionResult() == 0) {
+					// 记录已选中数据到数据库, 首先将数据进行序列化将数据保存至db数据库,将appIcon数据序列化
+					dataSqlManager = DataSqlManager.getInstance(mContext);
+					dataSqlManager.dbInsertItem(commandResult.getAppInfo());
+
+					// 动画逻辑后续在此添加
+					// ....
+
+					// 更新回收站button显示
+					((SysAppListActivity) mContext).setRecycleBinShow();
+					// 刷新listView列表显示
+					mListViewAdapter1.notifyDataSetChanged();
+				} else {
+					// toast提示失败
+					Toast.makeText(mContext, "卸载应用失败", Toast.LENGTH_SHORT)
+							.show();
+				}
+				break;
+			default:
+				break;
 			}
 		};
 	};
 
 	public Handler getHandler() {
-		return this.handler;
+		return this.mHandler;
 	}
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -61,12 +94,25 @@ public class SysAppListActivity extends Activity implements OnClickListener {
 
 		// 设置数据备份路径 /sdcard/rootgenuisBackup
 		// 如果目录已经存在则不做处理，否则新建目录
-		backupFilePath = AppManagerUtil.initBackupPath();
-		
+		backupFilePath = AppManagerUtil.initBackupPath(this);
+
 		// 不是第一次进入此activity
 		if (isInitView == false) {
 			initView();
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onResume()
+	 */
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		// 刷新button显示
+		setRecycleBinShow();
 	}
 
 	private DataSqlManager dataSqlManager;
@@ -80,6 +126,7 @@ public class SysAppListActivity extends Activity implements OnClickListener {
 		// 同步数据库与内存数据（回收站信息）
 		sysAppList = dataSqlManager.getSysAppList();
 		appList = dataSqlManager.getAppList();
+
 	}
 
 	private ImageView cursor;// 动画图片
@@ -261,4 +308,4 @@ public class SysAppListActivity extends Activity implements OnClickListener {
 		// 根据选中项调整列表,刷新适配器
 		// initAdapter();
 	}
-}  
+}

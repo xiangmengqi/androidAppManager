@@ -5,8 +5,14 @@ package com.shuame.sysapp.manager;
 
 import java.util.List;
 
+import com.shuame.sysapp.manager.ShellUtils.CommandResult;
+
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,9 +20,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.shuame.sysapp.manager.R;
-import com.shuame.sysapp.manager.ScriptUtil.ScriptHandler;
+import android.widget.Toast;
 
 /**
  * @author JackXiang
@@ -37,6 +41,51 @@ public class RecycleBinActivity extends Activity implements OnClickListener {
 	private Button btnCleanAll;
 
 	private ImageView ivBack;
+
+	// 回调消息
+	private CommandResult commandResult;
+
+	Context mContext = this;
+
+	// 主线程消息队列
+	private Handler mHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			if (msg.what == AppConstants.MSG_ON_RESTORE_SYSTEM_APP) {
+				// 回收站卸载命令回收站
+				commandResult = (CommandResult) msg.obj;
+				// 打印后台结果
+				Log.i("CommandResult", "CommandResult: " + commandResult.result);
+				Log.i("CommandResult", "CommandResultSuccess: "
+						+ commandResult.successMsg);
+				Log.i("CommandResult", "CommandResultError: "
+						+ commandResult.errorMsg);
+				// 判断卸载结果并分别处理
+				// 此处加上动画
+
+				if (commandResult.getActionResult() == 0) {
+					// 记录已选中数据到数据库, 首先将数据进行序列化将数据保存至db数据库,将appIcon数据序列化
+					dataSqlManager = DataSqlManager.getInstance(mContext);
+					dataSqlManager.dbDeleteItem(commandResult.getAppInfo());
+
+					// 动画逻辑后续在此添加
+					// 目前对于回收站没有动画需求
+
+					// 此处加上转圈动画
+
+					// 刷新listView列表显示
+					lvRecycleBinAdapter.notifyDataSetChanged();
+				} else {
+					// toast提示失败
+					Toast.makeText(mContext, "卸载应用失败", Toast.LENGTH_SHORT)
+							.show();
+				}
+			}
+		}
+	};
+
+	public Handler getHandler() {
+		return this.mHandler;
+	}
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -62,7 +111,7 @@ public class RecycleBinActivity extends Activity implements OnClickListener {
 		dataSqlManager = DataSqlManager.getInstance(this);
 		uninstallAppList = dataSqlManager.getUninstallAppList();
 		lvRecycleBinAdapter = new MyListViewAdapter(uninstallAppList,
-			AppManagerUtil.initBackupPath(), this, false, false);
+			AppManagerUtil.initBackupPath(this), this, false, false);
 		// 设置Adapter
 		lvRecycleBin.setAdapter(lvRecycleBinAdapter);
 	}
