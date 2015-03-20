@@ -16,6 +16,8 @@ import com.shuame.sysapp.manager.ShellUtils.CommandResult;
 
 public class AppManagerUtil {
 
+	private static final String TAG = "AppManagerUtil";
+
 	public static class ThreadUninstall extends Thread {
 
 		private String mBackupFilePath;
@@ -99,8 +101,6 @@ public class AppManagerUtil {
 		}
 	}
 
-	private static final String TAG = null;
-
 	// private static String mBackupFilePath;
 
 	// public static void rmBackupFile() {
@@ -179,15 +179,15 @@ public class AppManagerUtil {
 		commnandList.add(bkupPackagedataCommand);
 		CommandResult commandResult = ShellUtils.execCommand(commnandList, true);
 		// 判断是否成功移动apk文件
-		Log.i("uninstallApp", "result : " + commandResult.getResult());
-		Log.i("uninstallApp", "successMsg : " + commandResult.successMsg);
-		Log.i("uninstallApp", "errorMsg : " + commandResult.errorMsg);
+		Log.i(TAG, "uninstallApp result : " + commandResult.getResult());
+		Log.i(TAG, "uninstallApp successMsg : " + commandResult.successMsg);
+		Log.i(TAG, "uninstallApp errorMsg : " + commandResult.errorMsg);
 
-		Log.i("uninstallApp", "sourcedir : " + sourcedir);
-		Log.i("uninstallApp", "apkBackupPath : " + apkBackupPath);
+		Log.i(TAG, "uninstallApp sourcedir : " + sourcedir);
+		Log.i(TAG, "uninstallApp apkBackupPath : " + apkBackupPath);
 		Log.i(
-			"uninstallApp",
-			"sourcedir isExist: " + (new File(sourcedir)).exists());
+			TAG,
+			"uninstallApp sourcedir isExist: " + (new File(sourcedir)).exists());
 		Log.i("uninstallApp", "apkBackupPath isExist: "
 				+ (new File(apkBackupPath)).exists());
 
@@ -200,23 +200,20 @@ public class AppManagerUtil {
 	public static int isUninstallSuccess(String sourcedir, String apkBackupPath) {
 		// 检测文件是否存在
 		StringBuilder strbuilder = new StringBuilder();
-		String testCommand = strbuilder.append("test -e ")
+		String testCommand = strbuilder.append(
+			"/data/local/tmp/busybox test -e ")
 				.append(apkBackupPath)
 				.append(" -a ! -e ")
 				.append(sourcedir)
 				.append(" && echo \"true\" || echo \"false\"")
 				.toString();
-		Log.i("uninstallApp", "isUninstallSuccess testCommand: " + testCommand);
+		Log.i(TAG, "restoreApp  testCommand: " + testCommand);
 		List<String> commnandList = new ArrayList<String>();
 		commnandList.add(testCommand);
 		CommandResult commandResult = ShellUtils.execCommand(commnandList, true);
-		Log.i(
-			"uninstallApp",
-			"isUninstallSuccess result : " + commandResult.getResult());
-		Log.i("uninstallApp", "isUninstallSuccess successMsg: "
-				+ commandResult.successMsg);
-		Log.i("uninstallApp", "isUninstallSuccess errorMsg: "
-				+ commandResult.errorMsg);
+		Log.i(TAG, "isUninstallSuccess result : " + commandResult.getResult());
+		Log.i(TAG, "isUninstallSuccess successMsg: " + commandResult.successMsg);
+		Log.i(TAG, "isUninstallSuccess errorMsg: " + commandResult.errorMsg);
 		if (commandResult.successMsg.equals("true")) {
 			return 0;
 		} else {
@@ -229,7 +226,7 @@ public class AppManagerUtil {
 		String uninstallCommand = strbuilder.append("pm uninstall ")
 				.append(packageName)
 				.toString();
-		Log.i("uninstall normal app", uninstallCommand);
+		Log.i(TAG,"uninstall normal app" + uninstallCommand);
 		List<String> commnandList = new ArrayList<String>();
 		commnandList.add(uninstallCommand);
 		CommandResult result = ShellUtils.execCommand(commnandList, false);
@@ -258,7 +255,8 @@ public class AppManagerUtil {
 		StringBuilder strbuilder = new StringBuilder();
 		// 将xx.apk文件push到/system/app/目录
 
-		String restoreApkCommand = strbuilder.append("mv ")
+		String restoreApkCommand = strbuilder.append(
+			"/data/local/tmp/busybox mv ")
 				.append(apkBackupPath)
 				.append(" ")
 				.append(sourcedir)
@@ -284,17 +282,31 @@ public class AppManagerUtil {
 				.append(packageName)
 				.toString();
 		strbuilder.delete(0, strbuilder.length());
-		String packagedataRestoreCommand = strbuilder.append("mv -f ")
+		String packagedataRestoreCommand = strbuilder.append(
+			"/data/local/tmp/busybox mv -f ")
 				.append(packageDataBackupPath)
 				.append(" ")
 				.append("/data/data/")
 				.toString();
 
-		List<String> commnandList = new ArrayList<String>();
-		commnandList.add("mount -o remount,rw /system");
-		commnandList.add(restoreApkCommand);
-		commnandList.add(packagedataRestoreCommand);
-		CommandResult commandResult = ShellUtils.execCommand(commnandList, true);
+		List<String> commandList = new ArrayList<String>();
+		commandList.add("mount -o remount,rw /system");
+		commandList.add(restoreApkCommand);
+		commandList.add(packagedataRestoreCommand);
+		CommandResult commandResult = ShellUtils.execCommand(commandList, true);
+		Log.i(TAG, "restoreApp commandList : " + commandList.get(0));
+		Log.i(TAG, "restoreApp commandList : " + commandList.get(1));
+		Log.i(TAG, "restoreApp commandList : " + commandList.get(2));
+
+		Log.i(TAG, "restoreApp commandResult" + commandResult.getResult());
+		Log.i(TAG, "restoreApp successMsg : " + commandResult.successMsg);
+		Log.i(TAG, "restoreApp errorMsg : " + commandResult.errorMsg);
+
+		Log.i(TAG, "restoreApp sourcedir : " + sourcedir);
+		Log.i(TAG, "restoreApp apkBackupPath : " + apkBackupPath);
+		Log.i("uninstallApp", "apkBackupPath isExist: "
+				+ (new File(apkBackupPath)).exists());
+
 		// 判断是否成功移动apk文件
 		commandResult.setActionResult(isUninstallSuccess(
 			apkBackupPath, sourcedir));

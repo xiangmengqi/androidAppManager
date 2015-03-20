@@ -93,7 +93,6 @@ public class SysAppListActivity extends Activity implements OnClickListener {
 		getSqlData();
 
 		// 设置数据备份路径
-		//
 		// 如果目录已经存在则不做处理，否则新建目录
 		backupFilePath = AppManagerUtil.initBackupPath(this);
 
@@ -114,6 +113,7 @@ public class SysAppListActivity extends Activity implements OnClickListener {
 		super.onResume();
 		// 刷新button显示
 		setRecycleBinShow();
+		mListViewAdapter1.notifyDataSetChanged();
 	}
 
 	private DataSqlManager dataSqlManager;

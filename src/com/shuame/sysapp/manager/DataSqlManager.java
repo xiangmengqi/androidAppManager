@@ -66,10 +66,12 @@ public class DataSqlManager {
 
 	// 清空数据库
 	public void resetData() {
-		// 删除user表单
+		// 删除数据库user表单
 		sqlHelper.reSet();
 		// 清空内存中数据
 		uninstallAppList.clear();
+		// 清空本地保存的回收站数据
+		
 	}
 
 	public void readFromDb(Cursor cursor, AppInfo sysappInfo) {
