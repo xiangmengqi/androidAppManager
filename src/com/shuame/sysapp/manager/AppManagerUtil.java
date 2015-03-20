@@ -4,25 +4,15 @@
 package com.shuame.sysapp.manager;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.R.integer;
 import android.content.Context;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.appcompat.R.bool;
 import android.util.Log;
 
 import com.shuame.sysapp.manager.ShellUtils.CommandResult;
-
-/**
- * @author JackXiang
- * @version $1.0, 2015年3月11日 2015年3月11日 GMT+08:00
- * @since JDK5
- */
 
 public class AppManagerUtil {
 
@@ -143,38 +133,50 @@ public class AppManagerUtil {
 				.toString();
 
 		// 备份packageName数据文件夹到制定目录,打包 (.tar.gz)
+		// strbuilder1.delete(0, strbuilder1.length());
+		// String packageNameFilePath = strbuilder1.append("/data/data/")
+		// .append(packageName)
+		// .toString();
+		//
+		// strbuilder1.delete(0, strbuilder1.length());
+		// String backupFilePathTarGz = strbuilder1.append(backupFilePath)
+		// .append("/")
+		// .append(packageName)
+		// .append(".tar.gz")
+		// .toString();
+		//
+		// strbuilder1.delete(0, strbuilder1.length());
+		// String excludeTargz = strbuilder1.append("--exclude=")
+		// .append(packageNameFilePath)
+		// .append("/lib")
+		// .toString();
+		//
+		// strbuilder1.delete(0, strbuilder1.length());
+		// String targzPackageCommand = strbuilder1.append(
+		// "/data/local/tmp/busybox tar -cvf ")
+		// .append(backupFilePathTarGz)
+		// .append(" ")
+		// .append(excludeTargz)
+		// .append(" ")
+		// .append(packageNameFilePath)
+		// .toString();
 		strbuilder1.delete(0, strbuilder1.length());
 		String packageNameFilePath = strbuilder1.append("/data/data/")
 				.append(packageName)
 				.toString();
 
 		strbuilder1.delete(0, strbuilder1.length());
-		String backupFilePathTarGz = strbuilder1.append(backupFilePath)
-				.append("/")
-				.append(packageName)
-				.append(".tar.gz")
-				.toString();
-
-		strbuilder1.delete(0, strbuilder1.length());
-		String excludeTargz = strbuilder1.append("--exclude=")
+		String bkupPackagedataCommand = strbuilder1.append(
+			"/data/local/tmp/busybox mv -f ")
 				.append(packageNameFilePath)
-				.append("/lib")
-				.toString();
-
-		strbuilder1.delete(0, strbuilder1.length());
-		String targzPackageCommand = strbuilder1.append(
-			"/data/local/tmp/busybox tar -cvf ")
-				.append(backupFilePathTarGz)
 				.append(" ")
-				.append(excludeTargz)
-				.append(" ")
-				.append(packageNameFilePath)
+				.append(backupFilePath)
 				.toString();
 
 		List<String> commnandList = new ArrayList<String>();
 		commnandList.add("mount -o remount,rw /system");
 		commnandList.add(mvApkCommand);
-		commnandList.add(targzPackageCommand);
+		commnandList.add(bkupPackagedataCommand);
 		CommandResult commandResult = ShellUtils.execCommand(commnandList, true);
 		// 判断是否成功移动apk文件
 		Log.i("uninstallApp", "result : " + commandResult.getResult());
@@ -263,28 +265,39 @@ public class AppManagerUtil {
 				.toString();
 
 		// 还原app数据（解压缩package数据）
+		// strbuilder.delete(0, strbuilder.length());
+		// String backupFilePathTarGz = strbuilder.append(backupFilePath)
+		// .append("/")
+		// .append(packageName)
+		// .append(".tar.gz")
+		// .toString();
+		//
+		// strbuilder.delete(0, strbuilder.length());
+		// String targzPackageRestoreCommand = strbuilder.append("tar -zxvf ")
+		// .append(backupFilePathTarGz)
+		// .append(" -C ")
+		// .append("/data/data/")
+		// .toString();
 		strbuilder.delete(0, strbuilder.length());
-		String backupFilePathTarGz = strbuilder.append(backupFilePath)
+		String packageDataBackupPath = strbuilder.append(backupFilePath)
 				.append("/")
 				.append(packageName)
-				.append(".tar.gz")
 				.toString();
-
 		strbuilder.delete(0, strbuilder.length());
-		String targzPackageRestoreCommand = strbuilder.append("tar -zxvf ")
-				.append(backupFilePathTarGz)
-				.append(" -C ")
+		String packagedataRestoreCommand = strbuilder.append("mv -f ")
+				.append(packageDataBackupPath)
+				.append(" ")
 				.append("/data/data/")
 				.toString();
 
 		List<String> commnandList = new ArrayList<String>();
 		commnandList.add("mount -o remount,rw /system");
 		commnandList.add(restoreApkCommand);
-		commnandList.add(targzPackageRestoreCommand);
+		commnandList.add(packagedataRestoreCommand);
 		CommandResult commandResult = ShellUtils.execCommand(commnandList, true);
 		// 判断是否成功移动apk文件
 		commandResult.setActionResult(isUninstallSuccess(
-			apkBackupPath, sourcedir));		
+			apkBackupPath, sourcedir));
 		return commandResult;
 	}
 
@@ -330,7 +343,7 @@ public class AppManagerUtil {
 
 		// 直接采用data分区保存相关数据（/data/rootgeniusBackup）
 		StringBuilder strbuilder = new StringBuilder();
-		String backupPath = new String("/data/rootgeniusBackup");
+		String backupPath = context.getFilesDir().getPath();
 		String mkdirCommand = strbuilder.append(
 			"/data/local/tmp/busybox mkdir ")
 				.append(backupPath)

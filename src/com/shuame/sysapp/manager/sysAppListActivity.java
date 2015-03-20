@@ -92,7 +92,8 @@ public class SysAppListActivity extends Activity implements OnClickListener {
 		// 数据库创建&读取
 		getSqlData();
 
-		// 设置数据备份路径 /sdcard/rootgenuisBackup
+		// 设置数据备份路径
+		//
 		// 如果目录已经存在则不做处理，否则新建目录
 		backupFilePath = AppManagerUtil.initBackupPath(this);
 
